@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rc.rsm.mapper.RsmHiddenTroubleMapper">
+    
+    <resultMap type="RsmHiddenTrouble" id="RsmHiddenTroubleResult">
+        <result property="id"    column="id"    />
+        <result property="troubleTitle"    column="trouble_title"    />
+        <result property="creatorId"    column="creator_id"    />
+        <result property="troubleImgPath"    column="trouble_img_path"    />
+        <result property="troubleDesc"    column="trouble_desc"    />
+        <result property="status"    column="status"    />
+        <result property="troubleClassify"    column="trouble_classify"    />
+        <result property="source"    column="source"    />
+        <result property="handlerId"    column="handler_id"    />
+        <result property="handleImgPath"    column="handle_img_path"    />
+        <result property="rectifyDesc"    column="rectify_desc"    />
+        <result property="rectifyTime"    column="rectify_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectRsmHiddenTroubleVo">
+        select id, trouble_title, creator_id, trouble_img_path, trouble_desc, status, trouble_classify, source, handler_id, handle_img_path, rectify_desc, rectify_time, create_time, update_time, remark from rsm_hidden_trouble
+    </sql>
+
+    <select id="selectRsmHiddenTroubleList" parameterType="RsmHiddenTrouble" resultMap="RsmHiddenTroubleResult">
+        <include refid="selectRsmHiddenTroubleVo"/>
+        <where>  
+            <if test="troubleTitle != null  and troubleTitle != ''"> and trouble_title = #{troubleTitle}</if>
+            <if test="creatorId != null "> and creator_id = #{creatorId}</if>
+            <if test="troubleImgPath != null  and troubleImgPath != ''"> and trouble_img_path = #{troubleImgPath}</if>
+            <if test="troubleDesc != null  and troubleDesc != ''"> and trouble_desc = #{troubleDesc}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="troubleClassify != null "> and trouble_classify = #{troubleClassify}</if>
+            <if test="source != null "> and source = #{source}</if>
+            <if test="handlerId != null "> and handler_id = #{handlerId}</if>
+            <if test="handleImgPath != null  and handleImgPath != ''"> and handle_img_path = #{handleImgPath}</if>
+            <if test="rectifyDesc != null  and rectifyDesc != ''"> and rectify_desc = #{rectifyDesc}</if>
+            <if test="rectifyTime != null "> and rectify_time = #{rectifyTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmAllHiddenTrouble" parameterType="RsmHiddenTrouble" resultMap="RsmHiddenTroubleResult">
+        <include refid="selectRsmHiddenTroubleVo"/>
+        <where>
+            <if test="troubleTitle != null  and troubleTitle != ''"> and trouble_title = #{troubleTitle}</if>
+            <if test="creatorId != null "> and creator_id = #{creatorId}</if>
+            <if test="troubleImgPath != null  and troubleImgPath != ''"> and trouble_img_path = #{troubleImgPath}</if>
+            <if test="troubleDesc != null  and troubleDesc != ''"> and trouble_desc = #{troubleDesc}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="troubleClassify != null "> and trouble_classify = #{troubleClassify}</if>
+            <if test="source != null "> and source = #{source}</if>
+            <if test="handlerId != null "> and handler_id = #{handlerId}</if>
+            <if test="handleImgPath != null  and handleImgPath != ''"> and handle_img_path = #{handleImgPath}</if>
+            <if test="rectifyDesc != null  and rectifyDesc != ''"> and rectify_desc = #{rectifyDesc}</if>
+            <if test="rectifyTime != null "> and rectify_time = #{rectifyTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmHiddenTroubleById" parameterType="Long" resultMap="RsmHiddenTroubleResult">
+        <include refid="selectRsmHiddenTroubleVo"/>
+        where id = #{id}
+    </select>
+
+
+    <insert id="insertRsmHiddenTrouble" parameterType="RsmHiddenTrouble" useGeneratedKeys="true" keyProperty="id">
+        insert into rsm_hidden_trouble
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="troubleTitle != null and troubleTitle != ''">trouble_title,</if>
+            <if test="creatorId != null">creator_id,</if>
+            <if test="troubleImgPath != null">trouble_img_path,</if>
+            <if test="troubleDesc != null">trouble_desc,</if>
+            <if test="status != null">status,</if>
+            <if test="troubleClassify != null">trouble_classify,</if>
+            <if test="source != null">source,</if>
+            <if test="handlerId != null">handler_id,</if>
+            <if test="handleImgPath != null">handle_img_path,</if>
+            <if test="rectifyDesc != null">rectify_desc,</if>
+            <if test="rectifyTime != null">rectify_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="troubleTitle != null and troubleTitle != ''">#{troubleTitle},</if>
+            <if test="creatorId != null">#{creatorId},</if>
+            <if test="troubleImgPath != null">#{troubleImgPath},</if>
+            <if test="troubleDesc != null">#{troubleDesc},</if>
+            <if test="status != null">#{status},</if>
+            <if test="troubleClassify != null">#{troubleClassify},</if>
+            <if test="source != null">#{source},</if>
+            <if test="handlerId != null">#{handlerId},</if>
+            <if test="handleImgPath != null">#{handleImgPath},</if>
+            <if test="rectifyDesc != null">#{rectifyDesc},</if>
+            <if test="rectifyTime != null">#{rectifyTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRsmHiddenTrouble" parameterType="RsmHiddenTrouble">
+        update rsm_hidden_trouble
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="troubleTitle != null and troubleTitle != ''">trouble_title = #{troubleTitle},</if>
+            <if test="creatorId != null">creator_id = #{creatorId},</if>
+            <if test="troubleImgPath != null">trouble_img_path = #{troubleImgPath},</if>
+            <if test="troubleDesc != null">trouble_desc = #{troubleDesc},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="troubleClassify != null">trouble_classify = #{troubleClassify},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="handlerId != null">handler_id = #{handlerId},</if>
+            <if test="handleImgPath != null">handle_img_path = #{handleImgPath},</if>
+            <if test="rectifyDesc != null">rectify_desc = #{rectifyDesc},</if>
+            <if test="rectifyTime != null">rectify_time = #{rectifyTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <select id="countByWeek" resultType="com.rc.rsm.domain.vo.DayCountVO">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m-%d') AS day,
+            COUNT(*) AS count
+        FROM
+            rsm_hidden_trouble
+        WHERE
+            create_time >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY
+            day
+        ORDER BY
+            day;
+    </select>
+
+    <select id="countByMonth" resultType="com.rc.rsm.domain.vo.DateCountVO">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS date,
+            COUNT(*) AS count
+        FROM
+            rsm_hidden_trouble
+        GROUP BY
+            date
+        ORDER BY
+            date;
+    </select>
+
+    <delete id="deleteRsmHiddenTroubleById" parameterType="Long">
+        delete from rsm_hidden_trouble where id = #{id}
+    </delete>
+
+    <delete id="deleteRsmHiddenTroubleByIds" parameterType="String">
+        delete from rsm_hidden_trouble where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

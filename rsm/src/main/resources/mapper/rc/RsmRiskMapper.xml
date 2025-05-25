@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rc.rsm.mapper.RsmRiskMapper">
+    
+    <resultMap type="RsmRisk" id="RsmRiskResult">
+        <result property="id"    column="id"    />
+        <result property="riskName"    column="risk_name"    />
+        <result property="riskType"    column="risk_type"    />
+        <result property="supervisor"    column="supervisor"    />
+        <result property="controlStandard"    column="control_standard"    />
+        <result property="riskLevel"    column="risk_level"    />
+        <result property="riskInfo"    column="risk_info"    />
+        <result property="riskRelateId"    column="risk_relate_id"    />
+        <result property="auditor"    column="auditor"    />
+        <result property="riskDescribe"    column="risk_describe"    />
+        <result property="riskConseq"    column="risk_conseq"    />
+        <result property="controlMeasure"    column="control_measure"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRsmRiskVo">
+        select id,
+               risk_name,
+               risk_type,
+               supervisor,
+               control_standard,
+               risk_level,
+               risk_info,
+               risk_relate_id,
+               auditor,
+               risk_describe,
+               risk_conseq,
+               control_measure,
+               remark,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from rsm_risk
+    </sql>
+
+    <select id="selectRsmRiskList" parameterType="RsmRisk" resultMap="RsmRiskResult">
+        <include refid="selectRsmRiskVo"/>
+        <where>  
+            <if test="riskName != null  and riskName != ''"> and risk_name like concat('%', #{riskName}, '%')</if>
+            <if test="riskType != null  and riskType != ''"> and risk_type = #{riskType}</if>
+            <if test="supervisor != null  and supervisor != ''"> and supervisor = #{supervisor}</if>
+            <if test="controlStandard != null  and controlStandard != ''"> and control_standard = #{controlStandard}</if>
+            <if test="riskLevel != null  and riskLevel != ''"> and risk_level = #{riskLevel}</if>
+            <if test="riskInfo != null  and riskInfo != ''"> and risk_info = #{riskInfo}</if>
+            <if test="riskRelateId != null "> and risk_relate_id = #{riskRelateId}</if>
+            <if test="auditor != null  and auditor != ''"> and auditor = #{auditor}</if>
+            <if test="riskDescribe != null  and riskDescribe != ''"> and risk_describe = #{riskDescribe}</if>
+            <if test="riskConseq != null  and riskConseq != ''"> and risk_conseq = #{riskConseq}</if>
+            <if test="controlMeasure != null  and controlMeasure != ''"> and control_measure = #{controlMeasure}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectAllRsmRisk" parameterType="RsmRisk" resultMap="RsmRiskResult">
+        <include refid="selectRsmRiskVo"/>
+        <where>
+            <if test="riskName != null  and riskName != ''"> and risk_name like concat('%', #{riskName}, '%')</if>
+            <if test="riskType != null  and riskType != ''"> and risk_type = #{riskType}</if>
+            <if test="supervisor != null  and supervisor != ''"> and supervisor = #{supervisor}</if>
+            <if test="controlStandard != null  and controlStandard != ''"> and control_standard = #{controlStandard}</if>
+            <if test="riskLevel != null  and riskLevel != ''"> and risk_level = #{riskLevel}</if>
+            <if test="riskInfo != null  and riskInfo != ''"> and risk_info = #{riskInfo}</if>
+            <if test="riskRelateId != null "> and risk_relate_id = #{riskRelateId}</if>
+            <if test="auditor != null  and auditor != ''"> and auditor = #{auditor}</if>
+            <if test="riskDescribe != null  and riskDescribe != ''"> and risk_describe = #{riskDescribe}</if>
+            <if test="riskConseq != null  and riskConseq != ''"> and risk_conseq = #{riskConseq}</if>
+            <if test="controlMeasure != null  and controlMeasure != ''"> and control_measure = #{controlMeasure}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmRiskById" parameterType="Long" resultMap="RsmRiskResult">
+        <include refid="selectRsmRiskVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectRsmRiskListByLevel" resultType="com.rc.rsm.domain.po.RsmRisk"
+            parameterType="com.rc.rsm.domain.query.RsmTaskQuery">
+        <include refid="selectRsmRiskVo"/>
+    </select>
+
+
+    <insert id="insertRsmRisk" parameterType="RsmRisk" useGeneratedKeys="true" keyProperty="id">
+        insert into rsm_risk
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="riskName != null">risk_name,</if>
+            <if test="riskType != null">risk_type,</if>
+            <if test="supervisor != null">supervisor,</if>
+            <if test="controlStandard != null">control_standard,</if>
+            <if test="riskLevel != null">risk_level,</if>
+            <if test="riskInfo != null">risk_info,</if>
+            <if test="riskRelateId != null">risk_relate_id,</if>
+            <if test="auditor != null">auditor,</if>
+            <if test="riskDescribe != null">risk_describe,</if>
+            <if test="riskConseq != null">risk_conseq,</if>
+            <if test="controlMeasure != null">control_measure,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="riskName != null">#{riskName},</if>
+            <if test="riskType != null">#{riskType},</if>
+            <if test="supervisor != null">#{supervisor},</if>
+            <if test="controlStandard != null">#{controlStandard},</if>
+            <if test="riskLevel != null">#{riskLevel},</if>
+            <if test="riskInfo != null">#{riskInfo},</if>
+            <if test="riskRelateId != null">#{riskRelateId},</if>
+            <if test="auditor != null">#{auditor},</if>
+            <if test="riskDescribe != null">#{riskDescribe},</if>
+            <if test="riskConseq != null">#{riskConseq},</if>
+            <if test="controlMeasure != null">#{controlMeasure},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+
+    </insert>
+
+    <update id="updateRsmRisk" parameterType="RsmRisk">
+        update rsm_risk
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="riskName != null">risk_name = #{riskName},</if>
+            <if test="riskType != null">risk_type = #{riskType},</if>
+            <if test="supervisor != null">supervisor = #{supervisor},</if>
+            <if test="controlStandard != null">control_standard = #{controlStandard},</if>
+            <if test="riskLevel != null">risk_level = #{riskLevel},</if>
+            <if test="riskInfo != null">risk_info = #{riskInfo},</if>
+            <if test="riskRelateId != null">risk_relate_id = #{riskRelateId},</if>
+            <if test="auditor != null">auditor = #{auditor},</if>
+            <if test="riskDescribe != null">risk_describe = #{riskDescribe},</if>
+            <if test="riskConseq != null">risk_conseq = #{riskConseq},</if>
+            <if test="controlMeasure != null">control_measure = #{controlMeasure},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRsmRiskById" parameterType="Long">
+        delete from rsm_risk where id = #{id}
+    </delete>
+
+    <delete id="deleteRsmRiskByIds" parameterType="String">
+        delete from rsm_risk where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

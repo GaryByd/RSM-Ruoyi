@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmPatrolPointMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmPatrolPoint">
+		<!--巡查点id-->
+		<id column="id" property="id"/>
+		<!--巡查点名称-->
+		<result column="patrol_name" property="patrolName"/>
+		<!--巡查点描述-->
+		<result column="patrol_desc" property="patrolDesc"/>
+		<!--巡查点位置名-->
+		<result column="position" property="position"/>
+		<!--具体位置描述-->
+		<result column="location_describe" property="locationDescribe"/>
+		<!--安全员-->
+		<result column="security_officer" property="securityOfficer"/>
+		<!--最近一次巡查时间-->
+		<result column="last_patrol_time" property="lastPatrolTime"/>
+		<!--巡查次数-->
+		<result column="patrol_frequency" property="patrolFrequency"/>
+		<!--状态 0-正常 1-停用-->
+		<result column="status" property="status"/>
+		<!--删除标志（0代表存在 1代表删除）-->
+		<result column="del_flag" property="delFlag"/>
+		<!--创建者-->
+		<result column="create_by" property="createBy"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--更新者-->
+		<result column="update_by" property="updateBy"/>
+		<!--更新时间-->
+		<result column="update_time" property="updateTime"/>
+		<!--备注信息-->
+		<result column="remark" property="remark"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,patrol_name,patrol_desc,position,location_describe,security_officer,last_patrol_time,patrol_frequency,status,del_flag,create_by,create_time,update_by,update_time,remark
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.patrolName != null and query.patrolName!= ''">
+			and patrol_name= #{query.patrolName}
+		</if>
+		<if test=" query.patrolDesc != null and query.patrolDesc!= ''">
+			and patrol_desc= #{query.patrolDesc}
+		</if>
+		<if test=" query.position != null and query.position!= ''">
+			and position= #{query.position}
+		</if>
+		<if test=" query.locationDescribe != null and query.locationDescribe!= ''">
+			and location_describe= #{query.locationDescribe}
+		</if>
+		<if test=" query.securityOfficer != null and query.securityOfficer!= ''">
+			and security_officer= #{query.securityOfficer}
+		</if>
+		<if test=" query.lastPatrolTime != null">
+			and last_patrol_time= #{query.lastPatrolTime}
+		</if>
+		<if test=" query.patrolFrequency != null">
+			and patrol_frequency= #{query.patrolFrequency}
+		</if>
+		<if test=" query.status != null">
+			and status= #{query.status}
+		</if>
+		<if test=" query.delFlag != null">
+			and del_flag= #{query.delFlag}
+		</if>
+		<if test=" query.createBy != null and query.createBy!= ''">
+			and create_by= #{query.createBy}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateBy != null and query.updateBy!= ''">
+			and update_by= #{query.updateBy}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.patrolNameFuzzy != null and query.patrolNameFuzzy!= null ">
+			and patrol_name like concat('%', #{query.patrolNameFuzzy}, '%')
+		</if>
+		<if test=" query.patrolDescFuzzy != null and query.patrolDescFuzzy!= null ">
+			and patrol_desc like concat('%', #{query.patrolDescFuzzy}, '%')
+		</if>
+		<if test=" query.positionFuzzy != null and query.positionFuzzy!= null ">
+			and position like concat('%', #{query.positionFuzzy}, '%')
+		</if>
+		<if test=" query.locationDescribeFuzzy != null and query.locationDescribeFuzzy!= null ">
+			and location_describe like concat('%', #{query.locationDescribeFuzzy}, '%')
+		</if>
+		<if test=" query.securityOfficerFuzzy != null and query.securityOfficerFuzzy!= null ">
+			and security_officer like concat('%', #{query.securityOfficerFuzzy}, '%')
+		</if>
+		<if test=" query.lastPatrolTimeStart != null and query.lastPatrolTimeStart!= null ">
+			<![CDATA[ and last_patrol_time >= str_to_date(#{query.lastPatrolTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.lastPatrolTimeEnd != null and query.lastPatrolTimeEnd!= null ">
+			<![CDATA[ and last_patrol_time < date_sub(str_to_date(#{query.lastPatrolTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.createByFuzzy != null and query.createByFuzzy!= null ">
+			and create_by like concat('%', #{query.createByFuzzy}, '%')
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateByFuzzy != null and query.updateByFuzzy!= null ">
+			and update_by like concat('%', #{query.updateByFuzzy}, '%')
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT 
+		<include refid="base_column_list"/>
+			FROM rsm_patrol_point
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_patrol_point
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmPatrolPoint">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_patrol_point
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.patrolName != null">
+				patrol_name,
+			</if>
+			<if test="bean.patrolDesc != null">
+				patrol_desc,
+			</if>
+			<if test="bean.position != null">
+				position,
+			</if>
+			<if test="bean.locationDescribe != null">
+				location_describe,
+			</if>
+			<if test="bean.securityOfficer != null">
+				security_officer,
+			</if>
+			<if test="bean.lastPatrolTime != null">
+				last_patrol_time,
+			</if>
+			<if test="bean.patrolFrequency != null">
+				patrol_frequency,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.patrolName != null">
+				#{bean.patrolName},
+			</if>
+			<if test="bean.patrolDesc != null">
+				#{bean.patrolDesc},
+			</if>
+			<if test="bean.position != null">
+				#{bean.position},
+			</if>
+			<if test="bean.locationDescribe != null">
+				#{bean.locationDescribe},
+			</if>
+			<if test="bean.securityOfficer != null">
+				#{bean.securityOfficer},
+			</if>
+			<if test="bean.lastPatrolTime != null">
+				#{bean.lastPatrolTime},
+			</if>
+			<if test="bean.patrolFrequency != null">
+				#{bean.patrolFrequency},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.delFlag != null">
+				#{bean.delFlag},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmPatrolPoint">
+		INSERT INTO rsm_patrol_point
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.patrolName != null">
+				patrol_name,
+			</if>
+			<if test="bean.patrolDesc != null">
+				patrol_desc,
+			</if>
+			<if test="bean.position != null">
+				position,
+			</if>
+			<if test="bean.locationDescribe != null">
+				location_describe,
+			</if>
+			<if test="bean.securityOfficer != null">
+				security_officer,
+			</if>
+			<if test="bean.lastPatrolTime != null">
+				last_patrol_time,
+			</if>
+			<if test="bean.patrolFrequency != null">
+				patrol_frequency,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.patrolName != null">
+				#{bean.patrolName},
+			</if>
+			<if test="bean.patrolDesc != null">
+				#{bean.patrolDesc},
+			</if>
+			<if test="bean.position != null">
+				#{bean.position},
+			</if>
+			<if test="bean.locationDescribe != null">
+				#{bean.locationDescribe},
+			</if>
+			<if test="bean.securityOfficer != null">
+				#{bean.securityOfficer},
+			</if>
+			<if test="bean.lastPatrolTime != null">
+				#{bean.lastPatrolTime},
+			</if>
+			<if test="bean.patrolFrequency != null">
+				#{bean.patrolFrequency},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.delFlag != null">
+				#{bean.delFlag},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.patrolName != null">
+				patrol_name = VALUES(patrol_name),
+			</if>
+			<if test="bean.patrolDesc != null">
+				patrol_desc = VALUES(patrol_desc),
+			</if>
+			<if test="bean.position != null">
+				position = VALUES(position),
+			</if>
+			<if test="bean.locationDescribe != null">
+				location_describe = VALUES(location_describe),
+			</if>
+			<if test="bean.securityOfficer != null">
+				security_officer = VALUES(security_officer),
+			</if>
+			<if test="bean.lastPatrolTime != null">
+				last_patrol_time = VALUES(last_patrol_time),
+			</if>
+			<if test="bean.patrolFrequency != null">
+				patrol_frequency = VALUES(patrol_frequency),
+			</if>
+			<if test="bean.status != null">
+				status = VALUES(status),
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag = VALUES(del_flag),
+			</if>
+			<if test="bean.createBy != null">
+				create_by = VALUES(create_by),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateBy != null">
+				update_by = VALUES(update_by),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmPatrolPoint" >
+		INSERT INTO rsm_patrol_point(patrol_name, patrol_desc, position, location_describe, security_officer, last_patrol_time, patrol_frequency, status, del_flag, create_by, create_time, update_by, update_time, remark) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.patrolName}, #{item.patrolDesc}, #{item.position}, #{item.locationDescribe}, #{item.securityOfficer}, #{item.lastPatrolTime}, #{item.patrolFrequency}, #{item.status}, #{item.delFlag}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime}, #{item.remark})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmPatrolPoint" >
+		INSERT INTO rsm_patrol_point(patrol_name, patrol_desc, position, location_describe, security_officer, last_patrol_time, patrol_frequency, status, del_flag, create_by, create_time, update_by, update_time, remark) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.patrolName}, #{item.patrolDesc}, #{item.position}, #{item.locationDescribe}, #{item.securityOfficer}, #{item.lastPatrolTime}, #{item.patrolFrequency}, #{item.status}, #{item.delFlag}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime}, #{item.remark})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		patrol_name =  VALUES(patrol_name),
+		patrol_desc =  VALUES(patrol_desc),
+		position =  VALUES(position),
+		location_describe =  VALUES(location_describe),
+		security_officer =  VALUES(security_officer),
+		last_patrol_time =  VALUES(last_patrol_time),
+		patrol_frequency =  VALUES(patrol_frequency),
+		status =  VALUES(status),
+		del_flag =  VALUES(del_flag),
+		create_by =  VALUES(create_by),
+		create_time =  VALUES(create_time),
+		update_by =  VALUES(update_by),
+		update_time =  VALUES(update_time),
+		remark =  VALUES(remark)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/> 
+		from rsm_patrol_point where id =#{id}
+	</select>
+    <select id="selectPatrolNameFrequency" resultType="com.rsm.entity.vo.PatrolNameFrequencyVO">
+		SELECT
+			p.patrol_name AS patrolName,
+			ROUND(SUM(u.status = 2) * 1.0 / COUNT(*), 2) AS frequency
+		FROM
+			rsm_unverified_risk u
+				JOIN
+			rsm_patrol_point p ON u.position = p.id
+		GROUP BY
+			u.position;
+	</select>
+
+	<select id="selectTopPatrolPointsByFrequency" resultType="com.rsm.entity.vo.PatrolPointTop5VO">
+		SELECT patrol_name AS patrolName, patrol_frequency AS patrolFrequency
+		FROM rsm_patrol_point
+		ORDER BY patrol_frequency DESC
+			LIMIT 5
+	</select>
+
+    <!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmPatrolPoint">
+		update rsm_patrol_point
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.patrolName != null">
+				patrol_name= #{bean.patrolName},
+			</if>
+			<if test="bean.patrolDesc != null">
+				patrol_desc= #{bean.patrolDesc},
+			</if>
+			<if test="bean.position != null">
+				position= #{bean.position},
+			</if>
+			<if test="bean.locationDescribe != null">
+				location_describe= #{bean.locationDescribe},
+			</if>
+			<if test="bean.securityOfficer != null">
+				security_officer= #{bean.securityOfficer},
+			</if>
+			<if test="bean.lastPatrolTime != null">
+				last_patrol_time= #{bean.lastPatrolTime},
+			</if>
+			<if test="bean.patrolFrequency != null">
+				patrol_frequency= #{bean.patrolFrequency},
+			</if>
+			<if test="bean.status != null">
+				status= #{bean.status},
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag= #{bean.delFlag},
+			</if>
+			<if test="bean.createBy != null">
+				create_by= #{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				update_by= #{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_patrol_point where id =#{id}
+	</delete>
+
+</mapper>

@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmPatrolListMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmPatrolList">
+		<!--清单id-->
+		<id column="id" property="id"/>
+		<!--巡查清单名称-->
+		<result column="patrol_list_name" property="patrolListName"/>
+		<!--安全员id-->
+		<result column="principal_id" property="principalId"/>
+		<!--开始时间-->
+		<result column="start_time" property="startTime"/>
+		<!--结束时间-->
+		<result column="end_time" property="endTime"/>
+		<!--总的待查项数量-->
+		<result column="waiting_checked" property="waitingChecked"/>
+		<!--已检查数量-->
+		<result column="checked_count" property="checkedCount"/>
+		<!--发现隐患数量-->
+		<result column="hidden_trouble_count" property="hiddenTroubleCount"/>
+		<!--完成时间-->
+		<result column="finish_time" property="finishTime"/>
+		<!--状态 0-未开始 1-巡查中 2-已结束-->
+		<result column="status" property="status"/>
+		<!--删除标志（0代表存在 1代表删除）-->
+		<result column="del_flag" property="delFlag"/>
+		<!--创建者-->
+		<result column="create_by" property="createBy"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--更新时间-->
+		<result column="update_time" property="updateTime"/>
+		<!--修改者-->
+		<result column="update_by" property="updateBy"/>
+		<!--备注信息-->
+		<result column="remark" property="remark"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,patrol_list_name,principal_id,start_time,end_time,waiting_checked,checked_count,hidden_trouble_count,finish_time,status,del_flag,create_by,create_time,update_time,update_by,remark
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.patrolListName != null and query.patrolListName!= ''">
+			and patrol_list_name= #{query.patrolListName}
+		</if>
+		<if test=" query.principalId != null">
+			and principal_id= #{query.principalId}
+		</if>
+		<if test=" query.startTime != null">
+			and start_time= #{query.startTime}
+		</if>
+		<if test=" query.endTime != null">
+			and end_time= #{query.endTime}
+		</if>
+		<if test=" query.waitingChecked != null">
+			and waiting_checked= #{query.waitingChecked}
+		</if>
+		<if test=" query.checkedCount != null">
+			and checked_count= #{query.checkedCount}
+		</if>
+		<if test=" query.hiddenTroubleCount != null">
+			and hidden_trouble_count= #{query.hiddenTroubleCount}
+		</if>
+		<if test=" query.finishTime != null">
+			and finish_time= #{query.finishTime}
+		</if>
+		<if test=" query.status != null">
+			and status= #{query.status}
+		</if>
+		<if test=" query.delFlag != null">
+			and del_flag= #{query.delFlag}
+		</if>
+		<if test=" query.createBy != null and query.createBy!= ''">
+			and create_by= #{query.createBy}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+		<if test=" query.updateBy != null and query.updateBy!= ''">
+			and update_by= #{query.updateBy}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.patrolListNameFuzzy != null and query.patrolListNameFuzzy!= null ">
+			and patrol_list_name like concat('%', #{query.patrolListNameFuzzy}, '%')
+		</if>
+		<if test=" query.startTimeStart != null and query.startTimeStart!= null ">
+			<![CDATA[ and start_time >= str_to_date(#{query.startTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.startTimeEnd != null and query.startTimeEnd!= null ">
+			<![CDATA[ and start_time < date_sub(str_to_date(#{query.startTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.endTimeStart != null and query.endTimeStart!= null ">
+			<![CDATA[ and end_time >= str_to_date(#{query.endTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.endTimeEnd != null and query.endTimeEnd!= null ">
+			<![CDATA[ and end_time < date_sub(str_to_date(#{query.endTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.finishTimeStart != null and query.finishTimeStart!= null ">
+			<![CDATA[ and finish_time >= str_to_date(#{query.finishTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.finishTimeEnd != null and query.finishTimeEnd!= null ">
+			<![CDATA[ and finish_time < date_sub(str_to_date(#{query.finishTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.createByFuzzy != null and query.createByFuzzy!= null ">
+			and create_by like concat('%', #{query.createByFuzzy}, '%')
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateByFuzzy != null and query.updateByFuzzy!= null ">
+			and update_by like concat('%', #{query.updateByFuzzy}, '%')
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT 
+		<include refid="base_column_list"/>
+			FROM rsm_patrol_list
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_patrol_list
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmPatrolList">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_patrol_list
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.patrolListName != null">
+				patrol_list_name,
+			</if>
+			<if test="bean.principalId != null">
+				principal_id,
+			</if>
+			<if test="bean.startTime != null">
+				start_time,
+			</if>
+			<if test="bean.endTime != null">
+				end_time,
+			</if>
+			<if test="bean.waitingChecked != null">
+				waiting_checked,
+			</if>
+			<if test="bean.checkedCount != null">
+				checked_count,
+			</if>
+			<if test="bean.hiddenTroubleCount != null">
+				hidden_trouble_count,
+			</if>
+			<if test="bean.finishTime != null">
+				finish_time,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.patrolListName != null">
+				#{bean.patrolListName},
+			</if>
+			<if test="bean.principalId != null">
+				#{bean.principalId},
+			</if>
+			<if test="bean.startTime != null">
+				#{bean.startTime},
+			</if>
+			<if test="bean.endTime != null">
+				#{bean.endTime},
+			</if>
+			<if test="bean.waitingChecked != null">
+				#{bean.waitingChecked},
+			</if>
+			<if test="bean.checkedCount != null">
+				#{bean.checkedCount},
+			</if>
+			<if test="bean.hiddenTroubleCount != null">
+				#{bean.hiddenTroubleCount},
+			</if>
+			<if test="bean.finishTime != null">
+				#{bean.finishTime},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.delFlag != null">
+				#{bean.delFlag},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmPatrolList">
+		INSERT INTO rsm_patrol_list
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.patrolListName != null">
+				patrol_list_name,
+			</if>
+			<if test="bean.principalId != null">
+				principal_id,
+			</if>
+			<if test="bean.startTime != null">
+				start_time,
+			</if>
+			<if test="bean.endTime != null">
+				end_time,
+			</if>
+			<if test="bean.waitingChecked != null">
+				waiting_checked,
+			</if>
+			<if test="bean.checkedCount != null">
+				checked_count,
+			</if>
+			<if test="bean.hiddenTroubleCount != null">
+				hidden_trouble_count,
+			</if>
+			<if test="bean.finishTime != null">
+				finish_time,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.patrolListName != null">
+				#{bean.patrolListName},
+			</if>
+			<if test="bean.principalId != null">
+				#{bean.principalId},
+			</if>
+			<if test="bean.startTime != null">
+				#{bean.startTime},
+			</if>
+			<if test="bean.endTime != null">
+				#{bean.endTime},
+			</if>
+			<if test="bean.waitingChecked != null">
+				#{bean.waitingChecked},
+			</if>
+			<if test="bean.checkedCount != null">
+				#{bean.checkedCount},
+			</if>
+			<if test="bean.hiddenTroubleCount != null">
+				#{bean.hiddenTroubleCount},
+			</if>
+			<if test="bean.finishTime != null">
+				#{bean.finishTime},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.delFlag != null">
+				#{bean.delFlag},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.patrolListName != null">
+				patrol_list_name = VALUES(patrol_list_name),
+			</if>
+			<if test="bean.principalId != null">
+				principal_id = VALUES(principal_id),
+			</if>
+			<if test="bean.startTime != null">
+				start_time = VALUES(start_time),
+			</if>
+			<if test="bean.endTime != null">
+				end_time = VALUES(end_time),
+			</if>
+			<if test="bean.waitingChecked != null">
+				waiting_checked = VALUES(waiting_checked),
+			</if>
+			<if test="bean.checkedCount != null">
+				checked_count = VALUES(checked_count),
+			</if>
+			<if test="bean.hiddenTroubleCount != null">
+				hidden_trouble_count = VALUES(hidden_trouble_count),
+			</if>
+			<if test="bean.finishTime != null">
+				finish_time = VALUES(finish_time),
+			</if>
+			<if test="bean.status != null">
+				status = VALUES(status),
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag = VALUES(del_flag),
+			</if>
+			<if test="bean.createBy != null">
+				create_by = VALUES(create_by),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+			<if test="bean.updateBy != null">
+				update_by = VALUES(update_by),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmPatrolList" >
+		INSERT INTO rsm_patrol_list(patrol_list_name, principal_id, start_time, end_time, waiting_checked, checked_count, hidden_trouble_count, finish_time, status, del_flag, create_by, create_time, update_time, update_by, remark) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.patrolListName}, #{item.principalId}, #{item.startTime}, #{item.endTime}, #{item.waitingChecked}, #{item.checkedCount}, #{item.hiddenTroubleCount}, #{item.finishTime}, #{item.status}, #{item.delFlag}, #{item.createBy}, #{item.createTime}, #{item.updateTime}, #{item.updateBy}, #{item.remark})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmPatrolList" >
+		INSERT INTO rsm_patrol_list(patrol_list_name, principal_id, start_time, end_time, waiting_checked, checked_count, hidden_trouble_count, finish_time, status, del_flag, create_by, create_time, update_time, update_by, remark) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.patrolListName}, #{item.principalId}, #{item.startTime}, #{item.endTime}, #{item.waitingChecked}, #{item.checkedCount}, #{item.hiddenTroubleCount}, #{item.finishTime}, #{item.status}, #{item.delFlag}, #{item.createBy}, #{item.createTime}, #{item.updateTime}, #{item.updateBy}, #{item.remark})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		patrol_list_name =  VALUES(patrol_list_name),
+		principal_id =  VALUES(principal_id),
+		start_time =  VALUES(start_time),
+		end_time =  VALUES(end_time),
+		waiting_checked =  VALUES(waiting_checked),
+		checked_count =  VALUES(checked_count),
+		hidden_trouble_count =  VALUES(hidden_trouble_count),
+		finish_time =  VALUES(finish_time),
+		status =  VALUES(status),
+		del_flag =  VALUES(del_flag),
+		create_by =  VALUES(create_by),
+		create_time =  VALUES(create_time),
+		update_time =  VALUES(update_time),
+		update_by =  VALUES(update_by),
+		remark =  VALUES(remark)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/> 
+		from rsm_patrol_list where id =#{id}
+	</select>
+	<select id="selectFoundRate" resultType="java.lang.Double">
+		SELECT SUM(hidden_trouble_count)/SUM(checked_count) AS foundRate
+		FROM rsm_patrol_list
+		WHERE checked_count > 0;
+	</select>
+
+	<!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmPatrolList">
+		update rsm_patrol_list
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.patrolListName != null">
+				patrol_list_name= #{bean.patrolListName},
+			</if>
+			<if test="bean.principalId != null">
+				principal_id= #{bean.principalId},
+			</if>
+			<if test="bean.startTime != null">
+				start_time= #{bean.startTime},
+			</if>
+			<if test="bean.endTime != null">
+				end_time= #{bean.endTime},
+			</if>
+			<if test="bean.waitingChecked != null">
+				waiting_checked= #{bean.waitingChecked},
+			</if>
+			<if test="bean.checkedCount != null">
+				checked_count= #{bean.checkedCount},
+			</if>
+			<if test="bean.hiddenTroubleCount != null">
+				hidden_trouble_count= #{bean.hiddenTroubleCount},
+			</if>
+			<if test="bean.finishTime != null">
+				finish_time= #{bean.finishTime},
+			</if>
+			<if test="bean.status != null">
+				status= #{bean.status},
+			</if>
+			<if test="bean.delFlag != null">
+				del_flag= #{bean.delFlag},
+			</if>
+			<if test="bean.createBy != null">
+				create_by= #{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+			<if test="bean.updateBy != null">
+				update_by= #{bean.updateBy},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_patrol_list where id =#{id}
+	</delete>
+
+	<select id="selectCompletionRate" resultType="java.lang.Double">
+		SELECT SUM(checked_count)/SUM(waiting_checked) AS completionRate
+		FROM rsm_patrol_list
+		WHERE waiting_checked > 0;
+	</select>
+
+	<!-- 查询巡查点表中按巡查次数降序排列的前5个巡查点 -->
+	<select id="selectTop5PatrolPoints" resultType="java.util.Map">
+		SELECT patrol_name AS patrolName, patrol_frequency AS patrolFrequency
+		FROM rsm_patrol_point
+		ORDER BY patrol_frequency DESC
+		LIMIT 5;
+	</select>
+</mapper>

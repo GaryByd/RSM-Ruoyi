@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmTaskMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmTask">
+		<!--作业id，主键-->
+		<id column="id" property="id"/>
+		<!--作业名称-->
+		<result column="task_name" property="taskName"/>
+		<!--类型名称-->
+		<result column="type_name" property="typeName"/>
+		<!--班组名称-->
+		<result column="dept_name" property="deptName"/>
+		<!--作业开始时间-->
+		<result column="start_time" property="startTime"/>
+		<!--作业结束时间-->
+		<result column="end_time" property="endTime"/>
+		<!--风险关联id-->
+		<result column="risk_id" property="riskId"/>
+		<!--负责人姓名-->
+		<result column="mandate_holder" property="mandateHolder"/>
+		<!--审核状态（ 0审核中 1通过2未通过 3通过且成功加入待查项）-->
+		<result column="approval_status" property="approvalStatus"/>
+		<!--审核人姓名-->
+		<result column="reviewer" property="reviewer"/>
+		<!--作业描述-->
+		<result column="task_desc" property="taskDesc"/>
+		<!--巡查点位置id-->
+		<result column="position_id" property="positionId"/>
+		<!--创建人-->
+		<result column="create_by" property="createBy"/>
+		<!--备注（审核意见）-->
+		<result column="remark" property="remark"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--修改人-->
+		<result column="update_by" property="updateBy"/>
+		<!--修改时间-->
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,task_name,type_name,dept_name,start_time,end_time,risk_id,mandate_holder,approval_status,reviewer,task_desc,position_id,create_by,remark,create_time,update_by,update_time
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.taskName != null and query.taskName!= ''">
+			and task_name= #{query.taskName}
+		</if>
+		<if test=" query.typeName != null and query.typeName!= ''">
+			and type_name= #{query.typeName}
+		</if>
+		<if test=" query.deptName != null and query.deptName!= ''">
+			and dept_name= #{query.deptName}
+		</if>
+		<if test=" query.startTime != null">
+			and start_time= #{query.startTime}
+		</if>
+		<if test=" query.endTime != null">
+			and end_time= #{query.endTime}
+		</if>
+		<if test=" query.riskId != null">
+			and risk_id= #{query.riskId}
+		</if>
+		<if test=" query.mandateHolder != null and query.mandateHolder!= ''">
+			and mandate_holder= #{query.mandateHolder}
+		</if>
+		<if test=" query.approvalStatus != null">
+			and approval_status= #{query.approvalStatus}
+		</if>
+		<if test=" query.reviewer != null and query.reviewer!= ''">
+			and reviewer= #{query.reviewer}
+		</if>
+		<if test=" query.taskDesc != null and query.taskDesc!= ''">
+			and task_desc= #{query.taskDesc}
+		</if>
+		<if test=" query.positionId != null">
+			and position_id= #{query.positionId}
+		</if>
+		<if test=" query.createBy != null and query.createBy!= ''">
+			and create_by= #{query.createBy}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateBy != null and query.updateBy!= ''">
+			and update_by= #{query.updateBy}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.taskNameFuzzy != null and query.taskNameFuzzy!= null ">
+			and task_name like concat('%', #{query.taskNameFuzzy}, '%')
+		</if>
+		<if test=" query.typeNameFuzzy != null and query.typeNameFuzzy!= null ">
+			and type_name like concat('%', #{query.typeNameFuzzy}, '%')
+		</if>
+		<if test=" query.deptNameFuzzy != null and query.deptNameFuzzy!= null ">
+			and dept_name like concat('%', #{query.deptNameFuzzy}, '%')
+		</if>
+		<if test=" query.startTimeStart != null and query.startTimeStart!= null ">
+			<![CDATA[ and start_time >= str_to_date(#{query.startTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.startTimeEnd != null and query.startTimeEnd!= null ">
+			<![CDATA[ and start_time < date_sub(str_to_date(#{query.startTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.endTimeStart != null and query.endTimeStart!= null ">
+			<![CDATA[ and end_time >= str_to_date(#{query.endTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.endTimeEnd != null and query.endTimeEnd!= null ">
+			<![CDATA[ and end_time < date_sub(str_to_date(#{query.endTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.mandateHolderFuzzy != null and query.mandateHolderFuzzy!= null ">
+			and mandate_holder like concat('%', #{query.mandateHolderFuzzy}, '%')
+		</if>
+		<if test=" query.reviewerFuzzy != null and query.reviewerFuzzy!= null ">
+			and reviewer like concat('%', #{query.reviewerFuzzy}, '%')
+		</if>
+		<if test=" query.taskDescFuzzy != null and query.taskDescFuzzy!= null ">
+			and task_desc like concat('%', #{query.taskDescFuzzy}, '%')
+		</if>
+		<if test=" query.createByFuzzy != null and query.createByFuzzy!= null ">
+			and create_by like concat('%', #{query.createByFuzzy}, '%')
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateByFuzzy != null and query.updateByFuzzy!= null ">
+			and update_by like concat('%', #{query.updateByFuzzy}, '%')
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT 
+		<include refid="base_column_list"/>
+			FROM rsm_task
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_task
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmTask">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_task
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.taskName != null">
+				task_name,
+			</if>
+			<if test="bean.typeName != null">
+				type_name,
+			</if>
+			<if test="bean.deptName != null">
+				dept_name,
+			</if>
+			<if test="bean.startTime != null">
+				start_time,
+			</if>
+			<if test="bean.endTime != null">
+				end_time,
+			</if>
+			<if test="bean.riskId != null">
+				risk_id,
+			</if>
+			<if test="bean.mandateHolder != null">
+				mandate_holder,
+			</if>
+			<if test="bean.approvalStatus != null">
+				approval_status,
+			</if>
+			<if test="bean.reviewer != null">
+				reviewer,
+			</if>
+			<if test="bean.taskDesc != null">
+				task_desc,
+			</if>
+			<if test="bean.positionId != null">
+				position_id,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.taskName != null">
+				#{bean.taskName},
+			</if>
+			<if test="bean.typeName != null">
+				#{bean.typeName},
+			</if>
+			<if test="bean.deptName != null">
+				#{bean.deptName},
+			</if>
+			<if test="bean.startTime != null">
+				#{bean.startTime},
+			</if>
+			<if test="bean.endTime != null">
+				#{bean.endTime},
+			</if>
+			<if test="bean.riskId != null">
+				#{bean.riskId},
+			</if>
+			<if test="bean.mandateHolder != null">
+				#{bean.mandateHolder},
+			</if>
+			<if test="bean.approvalStatus != null">
+				#{bean.approvalStatus},
+			</if>
+			<if test="bean.reviewer != null">
+				#{bean.reviewer},
+			</if>
+			<if test="bean.taskDesc != null">
+				#{bean.taskDesc},
+			</if>
+			<if test="bean.positionId != null">
+				#{bean.positionId},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmTask">
+		INSERT INTO rsm_task
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.taskName != null">
+				task_name,
+			</if>
+			<if test="bean.typeName != null">
+				type_name,
+			</if>
+			<if test="bean.deptName != null">
+				dept_name,
+			</if>
+			<if test="bean.startTime != null">
+				start_time,
+			</if>
+			<if test="bean.endTime != null">
+				end_time,
+			</if>
+			<if test="bean.riskId != null">
+				risk_id,
+			</if>
+			<if test="bean.mandateHolder != null">
+				mandate_holder,
+			</if>
+			<if test="bean.approvalStatus != null">
+				approval_status,
+			</if>
+			<if test="bean.reviewer != null">
+				reviewer,
+			</if>
+			<if test="bean.taskDesc != null">
+				task_desc,
+			</if>
+			<if test="bean.positionId != null">
+				position_id,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.taskName != null">
+				#{bean.taskName},
+			</if>
+			<if test="bean.typeName != null">
+				#{bean.typeName},
+			</if>
+			<if test="bean.deptName != null">
+				#{bean.deptName},
+			</if>
+			<if test="bean.startTime != null">
+				#{bean.startTime},
+			</if>
+			<if test="bean.endTime != null">
+				#{bean.endTime},
+			</if>
+			<if test="bean.riskId != null">
+				#{bean.riskId},
+			</if>
+			<if test="bean.mandateHolder != null">
+				#{bean.mandateHolder},
+			</if>
+			<if test="bean.approvalStatus != null">
+				#{bean.approvalStatus},
+			</if>
+			<if test="bean.reviewer != null">
+				#{bean.reviewer},
+			</if>
+			<if test="bean.taskDesc != null">
+				#{bean.taskDesc},
+			</if>
+			<if test="bean.positionId != null">
+				#{bean.positionId},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.taskName != null">
+				task_name = VALUES(task_name),
+			</if>
+			<if test="bean.typeName != null">
+				type_name = VALUES(type_name),
+			</if>
+			<if test="bean.deptName != null">
+				dept_name = VALUES(dept_name),
+			</if>
+			<if test="bean.startTime != null">
+				start_time = VALUES(start_time),
+			</if>
+			<if test="bean.endTime != null">
+				end_time = VALUES(end_time),
+			</if>
+			<if test="bean.riskId != null">
+				risk_id = VALUES(risk_id),
+			</if>
+			<if test="bean.mandateHolder != null">
+				mandate_holder = VALUES(mandate_holder),
+			</if>
+			<if test="bean.approvalStatus != null">
+				approval_status = VALUES(approval_status),
+			</if>
+			<if test="bean.reviewer != null">
+				reviewer = VALUES(reviewer),
+			</if>
+			<if test="bean.taskDesc != null">
+				task_desc = VALUES(task_desc),
+			</if>
+			<if test="bean.positionId != null">
+				position_id = VALUES(position_id),
+			</if>
+			<if test="bean.createBy != null">
+				create_by = VALUES(create_by),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateBy != null">
+				update_by = VALUES(update_by),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmTask" >
+		INSERT INTO rsm_task(task_name, type_name, dept_name, start_time, end_time, risk_id, mandate_holder, approval_status, reviewer, task_desc, position_id, create_by, remark, create_time, update_by, update_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.taskName}, #{item.typeName}, #{item.deptName}, #{item.startTime}, #{item.endTime}, #{item.riskId}, #{item.mandateHolder}, #{item.approvalStatus}, #{item.reviewer}, #{item.taskDesc}, #{item.positionId}, #{item.createBy}, #{item.remark}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmTask" >
+		INSERT INTO rsm_task(task_name, type_name, dept_name, start_time, end_time, risk_id, mandate_holder, approval_status, reviewer, task_desc, position_id, create_by, remark, create_time, update_by, update_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.taskName}, #{item.typeName}, #{item.deptName}, #{item.startTime}, #{item.endTime}, #{item.riskId}, #{item.mandateHolder}, #{item.approvalStatus}, #{item.reviewer}, #{item.taskDesc}, #{item.positionId}, #{item.createBy}, #{item.remark}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		task_name =  VALUES(task_name),
+		type_name =  VALUES(type_name),
+		dept_name =  VALUES(dept_name),
+		start_time =  VALUES(start_time),
+		end_time =  VALUES(end_time),
+		risk_id =  VALUES(risk_id),
+		mandate_holder =  VALUES(mandate_holder),
+		approval_status =  VALUES(approval_status),
+		reviewer =  VALUES(reviewer),
+		task_desc =  VALUES(task_desc),
+		position_id =  VALUES(position_id),
+		create_by =  VALUES(create_by),
+		remark =  VALUES(remark),
+		create_time =  VALUES(create_time),
+		update_by =  VALUES(update_by),
+		update_time =  VALUES(update_time)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/> 
+		from rsm_task where id =#{id}
+	</select>
+
+	<!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmTask">
+		update rsm_task
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.taskName != null">
+				task_name= #{bean.taskName},
+			</if>
+			<if test="bean.typeName != null">
+				type_name= #{bean.typeName},
+			</if>
+			<if test="bean.deptName != null">
+				dept_name= #{bean.deptName},
+			</if>
+			<if test="bean.startTime != null">
+				start_time= #{bean.startTime},
+			</if>
+			<if test="bean.endTime != null">
+				end_time= #{bean.endTime},
+			</if>
+			<if test="bean.riskId != null">
+				risk_id= #{bean.riskId},
+			</if>
+			<if test="bean.mandateHolder != null">
+				mandate_holder= #{bean.mandateHolder},
+			</if>
+			<if test="bean.approvalStatus != null">
+				approval_status= #{bean.approvalStatus},
+			</if>
+			<if test="bean.reviewer != null">
+				reviewer= #{bean.reviewer},
+			</if>
+			<if test="bean.taskDesc != null">
+				task_desc= #{bean.taskDesc},
+			</if>
+			<if test="bean.positionId != null">
+				position_id= #{bean.positionId},
+			</if>
+			<if test="bean.createBy != null">
+				create_by= #{bean.createBy},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				update_by= #{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_task where id =#{id}
+	</delete>
+
+	<!-- 查询各部门作业数量统计 -->
+	<select id="selectTaskCountByDept" resultType="com.rsm.entity.vo.DeptTaskCountVO">
+		SELECT dept_name AS deptName, COUNT(*) AS taskCount
+		FROM rsm_task
+		GROUP BY dept_name
+		order by taskCount desc
+	</select>
+
+</mapper>

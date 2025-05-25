@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rc.rsm.mapper.RsmUnverifiedRiskMapper">
+    
+    <resultMap type="RsmUnverifiedRisk" id="RsmUnverifiedRiskResult">
+        <result property="id"    column="id"    />
+        <result property="unverifiedRiskName"    column="unverified_risk_name"    />
+        <result property="riskId"    column="risk_id"    />
+        <result property="patrolListId"    column="patrol_list_id"    />
+        <result property="riskType"    column="risk_type"    />
+        <result property="admin"    column="admin"    />
+        <result property="controlStandard"    column="control_standard"    />
+        <result property="position"    column="position"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRsmUnverifiedRiskVo">
+        select id, unverified_risk_name, risk_id, patrol_list_id, risk_type, admin, control_standard, position, status, remark, create_by, create_time, update_by, update_time from rsm_unverified_risk
+    </sql>
+
+    <select id="selectRsmUnverifiedRiskList" parameterType="RsmUnverifiedRisk" resultMap="RsmUnverifiedRiskResult">
+        <include refid="selectRsmUnverifiedRiskVo"/>
+        <where>
+            <if test="unverifiedRiskName != null  and unverifiedRiskName != ''"> and unverified_risk_name like concat('%', #{unverifiedRiskName}, '%')</if>
+            <if test="riskId != null "> and risk_id = #{riskId}</if>
+            <if test="patrolListId != null "> and patrol_list_id = #{patrolListId}</if>
+            <if test="riskType != null  and riskType != ''"> and risk_type = #{riskType}</if>
+            <if test="admin != null  and admin != ''"> and admin = #{admin}</if>
+            <if test="controlStandard != null  and controlStandard != ''"> and control_standard = #{controlStandard}</if>
+            <if test="position != null "> and position = #{position}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmAllUnverifiedRisk" parameterType="RsmUnverifiedRisk" resultMap="RsmUnverifiedRiskResult">
+        <include refid="selectRsmUnverifiedRiskVo"/>
+        <where>
+            <if test="unverifiedRiskName != null  and unverifiedRiskName != ''"> and unverified_risk_name like concat('%', #{unverifiedRiskName}, '%')</if>
+            <if test="riskId != null "> and risk_id = #{riskId}</if>
+            <if test="patrolListId != null "> and patrol_list_id = #{patrolListId}</if>
+            <if test="riskType != null  and riskType != ''"> and risk_type = #{riskType}</if>
+            <if test="admin != null  and admin != ''"> and admin = #{admin}</if>
+            <if test="controlStandard != null  and controlStandard != ''"> and control_standard = #{controlStandard}</if>
+            <if test="position != null "> and position = #{position}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmUnverifiedRiskById" parameterType="Long" resultMap="RsmUnverifiedRiskResult">
+        <include refid="selectRsmUnverifiedRiskVo"/>
+        where id = #{id}
+    </select>
+
+
+    <insert id="insertRsmUnverifiedRisk" parameterType="RsmUnverifiedRisk" useGeneratedKeys="true" keyProperty="id">
+        insert into rsm_unverified_risk
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="unverifiedRiskName != null">unverified_risk_name,</if>
+            <if test="riskId != null">risk_id,</if>
+            <if test="patrolListId != null">patrol_list_id,</if>
+            <if test="riskType != null">risk_type,</if>
+            <if test="admin != null">admin,</if>
+            <if test="controlStandard != null">control_standard,</if>
+            <if test="position != null">position,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="unverifiedRiskName != null">#{unverifiedRiskName},</if>
+            <if test="riskId != null">#{riskId},</if>
+            <if test="patrolListId != null">#{patrolListId},</if>
+            <if test="riskType != null">#{riskType},</if>
+            <if test="admin != null">#{admin},</if>
+            <if test="controlStandard != null">#{controlStandard},</if>
+            <if test="position != null">#{position},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRsmUnverifiedRisk" parameterType="RsmUnverifiedRisk">
+        update rsm_unverified_risk
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="unverifiedRiskName != null">unverified_risk_name = #{unverifiedRiskName},</if>
+            <if test="riskId != null">risk_id = #{riskId},</if>
+            <if test="patrolListId != null">patrol_list_id = #{patrolListId},</if>
+            <if test="riskType != null">risk_type = #{riskType},</if>
+            <if test="admin != null">admin = #{admin},</if>
+            <if test="controlStandard != null">control_standard = #{controlStandard},</if>
+            <if test="position != null">position = #{position},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="countByThisMonth" resultType="com.rc.rsm.domain.vo.DayCountVO">
+        SELECT
+        DATE_FORMAT(create_time, '%Y-%m-%d') AS day,
+        COUNT(*) AS count
+        FROM
+        rsm_unverified_risk
+        WHERE
+        create_time >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND
+        DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH) > create_time
+            GROUP BY
+        day
+        ORDER BY
+        day
+    </select>
+
+    <select id="countByMonth" resultType="com.rc.rsm.domain.vo.DateCountVO">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS date,
+            COUNT(*) AS count
+        FROM
+            rsm_unverified_risk
+        GROUP BY
+            date
+        ORDER BY
+            date;
+    </select>
+
+    <delete id="deleteRsmUnverifiedRiskById" parameterType="Long">
+        delete from rsm_unverified_risk where id = #{id}
+    </delete>
+
+    <delete id="deleteRsmUnverifiedRiskByIds" parameterType="String">
+        delete from rsm_unverified_risk where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

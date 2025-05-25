@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmRiskMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmRisk">
+		<!--风险id-->
+		<id column="id" property="id"/>
+		<!--风险名称-->
+		<result column="risk_name" property="riskName"/>
+		<!--风险类型-->
+		<result column="risk_type" property="riskType"/>
+		<!--监管人员-->
+		<result column="supervisor" property="supervisor"/>
+		<!--管控标准-->
+		<result column="control_standard" property="controlStandard"/>
+		<!--风险等级-->
+		<result column="risk_level" property="riskLevel"/>
+		<!--风险信息，作为设备风险则说明是什么设备，作为生产现场风险说明哪些生产现场，作为作业活动说明哪个作业-->
+		<result column="risk_info" property="riskInfo"/>
+		<!--风险关联id，作为保留字段，如果没有设备表和生产现场表那么这个字段仅在风险类型为作业风险时有用，用于关联作业表-->
+		<result column="risk_relate_id" property="riskRelateId"/>
+		<!--审核人-->
+		<result column="auditor" property="auditor"/>
+		<!--风险描述-->
+		<result column="risk_describe" property="riskDescribe"/>
+		<!--风险后果-->
+		<result column="risk_conseq" property="riskConseq"/>
+		<!--风险管理措施-->
+		<result column="control_measure" property="controlMeasure"/>
+		<!--备注-->
+		<result column="remark" property="remark"/>
+		<!--创建人-->
+		<result column="create_by" property="createBy"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--修改人-->
+		<result column="update_by" property="updateBy"/>
+		<!--更新时间-->
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,risk_name,risk_type,supervisor,control_standard,risk_level,risk_info,risk_relate_id,auditor,risk_describe,risk_conseq,control_measure,remark,create_by,create_time,update_by,update_time
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.riskName != null and query.riskName!= ''">
+			and risk_name= #{query.riskName}
+		</if>
+		<if test=" query.riskType != null and query.riskType!= ''">
+			and risk_type= #{query.riskType}
+		</if>
+		<if test=" query.supervisor != null and query.supervisor!= ''">
+			and supervisor= #{query.supervisor}
+		</if>
+		<if test=" query.controlStandard != null and query.controlStandard!= ''">
+			and control_standard= #{query.controlStandard}
+		</if>
+		<if test=" query.riskLevel != null and query.riskLevel!= ''">
+			and risk_level= #{query.riskLevel}
+		</if>
+		<if test=" query.riskInfo != null and query.riskInfo!= ''">
+			and risk_info= #{query.riskInfo}
+		</if>
+		<if test=" query.riskRelateId != null">
+			and risk_relate_id= #{query.riskRelateId}
+		</if>
+		<if test=" query.auditor != null and query.auditor!= ''">
+			and auditor= #{query.auditor}
+		</if>
+		<if test=" query.riskDescribe != null and query.riskDescribe!= ''">
+			and risk_describe= #{query.riskDescribe}
+		</if>
+		<if test=" query.riskConseq != null and query.riskConseq!= ''">
+			and risk_conseq= #{query.riskConseq}
+		</if>
+		<if test=" query.controlMeasure != null and query.controlMeasure!= ''">
+			and control_measure= #{query.controlMeasure}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+		<if test=" query.createBy != null and query.createBy!= ''">
+			and create_by= #{query.createBy}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateBy != null and query.updateBy!= ''">
+			and update_by= #{query.updateBy}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.riskNameFuzzy != null and query.riskNameFuzzy!= null ">
+			and risk_name like concat('%', #{query.riskNameFuzzy}, '%')
+		</if>
+		<if test=" query.riskTypeFuzzy != null and query.riskTypeFuzzy!= null ">
+			and risk_type like concat('%', #{query.riskTypeFuzzy}, '%')
+		</if>
+		<if test=" query.supervisorFuzzy != null and query.supervisorFuzzy!= null ">
+			and supervisor like concat('%', #{query.supervisorFuzzy}, '%')
+		</if>
+		<if test=" query.controlStandardFuzzy != null and query.controlStandardFuzzy!= null ">
+			and control_standard like concat('%', #{query.controlStandardFuzzy}, '%')
+		</if>
+		<if test=" query.riskLevelFuzzy != null and query.riskLevelFuzzy!= null ">
+			and risk_level like concat('%', #{query.riskLevelFuzzy}, '%')
+		</if>
+		<if test=" query.riskInfoFuzzy != null and query.riskInfoFuzzy!= null ">
+			and risk_info like concat('%', #{query.riskInfoFuzzy}, '%')
+		</if>
+		<if test=" query.auditorFuzzy != null and query.auditorFuzzy!= null ">
+			and auditor like concat('%', #{query.auditorFuzzy}, '%')
+		</if>
+		<if test=" query.riskDescribeFuzzy != null and query.riskDescribeFuzzy!= null ">
+			and risk_describe like concat('%', #{query.riskDescribeFuzzy}, '%')
+		</if>
+		<if test=" query.riskConseqFuzzy != null and query.riskConseqFuzzy!= null ">
+			and risk_conseq like concat('%', #{query.riskConseqFuzzy}, '%')
+		</if>
+		<if test=" query.controlMeasureFuzzy != null and query.controlMeasureFuzzy!= null ">
+			and control_measure like concat('%', #{query.controlMeasureFuzzy}, '%')
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+		<if test=" query.createByFuzzy != null and query.createByFuzzy!= null ">
+			and create_by like concat('%', #{query.createByFuzzy}, '%')
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateByFuzzy != null and query.updateByFuzzy!= null ">
+			and update_by like concat('%', #{query.updateByFuzzy}, '%')
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT
+		<include refid="base_column_list"/>
+			FROM rsm_risk
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_risk
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmRisk">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_risk
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.riskName != null">
+				risk_name,
+			</if>
+			<if test="bean.riskType != null">
+				risk_type,
+			</if>
+			<if test="bean.supervisor != null">
+				supervisor,
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard,
+			</if>
+			<if test="bean.riskLevel != null">
+				risk_level,
+			</if>
+			<if test="bean.riskInfo != null">
+				risk_info,
+			</if>
+			<if test="bean.riskRelateId != null">
+				risk_relate_id,
+			</if>
+			<if test="bean.auditor != null">
+				auditor,
+			</if>
+			<if test="bean.riskDescribe != null">
+				risk_describe,
+			</if>
+			<if test="bean.riskConseq != null">
+				risk_conseq,
+			</if>
+			<if test="bean.controlMeasure != null">
+				control_measure,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.riskName != null">
+				#{bean.riskName},
+			</if>
+			<if test="bean.riskType != null">
+				#{bean.riskType},
+			</if>
+			<if test="bean.supervisor != null">
+				#{bean.supervisor},
+			</if>
+			<if test="bean.controlStandard != null">
+				#{bean.controlStandard},
+			</if>
+			<if test="bean.riskLevel != null">
+				#{bean.riskLevel},
+			</if>
+			<if test="bean.riskInfo != null">
+				#{bean.riskInfo},
+			</if>
+			<if test="bean.riskRelateId != null">
+				#{bean.riskRelateId},
+			</if>
+			<if test="bean.auditor != null">
+				#{bean.auditor},
+			</if>
+			<if test="bean.riskDescribe != null">
+				#{bean.riskDescribe},
+			</if>
+			<if test="bean.riskConseq != null">
+				#{bean.riskConseq},
+			</if>
+			<if test="bean.controlMeasure != null">
+				#{bean.controlMeasure},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmRisk">
+		INSERT INTO rsm_risk
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.riskName != null">
+				risk_name,
+			</if>
+			<if test="bean.riskType != null">
+				risk_type,
+			</if>
+			<if test="bean.supervisor != null">
+				supervisor,
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard,
+			</if>
+			<if test="bean.riskLevel != null">
+				risk_level,
+			</if>
+			<if test="bean.riskInfo != null">
+				risk_info,
+			</if>
+			<if test="bean.riskRelateId != null">
+				risk_relate_id,
+			</if>
+			<if test="bean.auditor != null">
+				auditor,
+			</if>
+			<if test="bean.riskDescribe != null">
+				risk_describe,
+			</if>
+			<if test="bean.riskConseq != null">
+				risk_conseq,
+			</if>
+			<if test="bean.controlMeasure != null">
+				control_measure,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.riskName != null">
+				#{bean.riskName},
+			</if>
+			<if test="bean.riskType != null">
+				#{bean.riskType},
+			</if>
+			<if test="bean.supervisor != null">
+				#{bean.supervisor},
+			</if>
+			<if test="bean.controlStandard != null">
+				#{bean.controlStandard},
+			</if>
+			<if test="bean.riskLevel != null">
+				#{bean.riskLevel},
+			</if>
+			<if test="bean.riskInfo != null">
+				#{bean.riskInfo},
+			</if>
+			<if test="bean.riskRelateId != null">
+				#{bean.riskRelateId},
+			</if>
+			<if test="bean.auditor != null">
+				#{bean.auditor},
+			</if>
+			<if test="bean.riskDescribe != null">
+				#{bean.riskDescribe},
+			</if>
+			<if test="bean.riskConseq != null">
+				#{bean.riskConseq},
+			</if>
+			<if test="bean.controlMeasure != null">
+				#{bean.controlMeasure},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.riskName != null">
+				risk_name = VALUES(risk_name),
+			</if>
+			<if test="bean.riskType != null">
+				risk_type = VALUES(risk_type),
+			</if>
+			<if test="bean.supervisor != null">
+				supervisor = VALUES(supervisor),
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard = VALUES(control_standard),
+			</if>
+			<if test="bean.riskLevel != null">
+				risk_level = VALUES(risk_level),
+			</if>
+			<if test="bean.riskInfo != null">
+				risk_info = VALUES(risk_info),
+			</if>
+			<if test="bean.riskRelateId != null">
+				risk_relate_id = VALUES(risk_relate_id),
+			</if>
+			<if test="bean.auditor != null">
+				auditor = VALUES(auditor),
+			</if>
+			<if test="bean.riskDescribe != null">
+				risk_describe = VALUES(risk_describe),
+			</if>
+			<if test="bean.riskConseq != null">
+				risk_conseq = VALUES(risk_conseq),
+			</if>
+			<if test="bean.controlMeasure != null">
+				control_measure = VALUES(control_measure),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+			<if test="bean.createBy != null">
+				create_by = VALUES(create_by),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateBy != null">
+				update_by = VALUES(update_by),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmRisk" >
+		INSERT INTO rsm_risk(risk_name, risk_type, supervisor, control_standard, risk_level, risk_info, risk_relate_id, auditor, risk_describe, risk_conseq, control_measure, remark, create_by, create_time, update_by, update_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.riskName}, #{item.riskType}, #{item.supervisor}, #{item.controlStandard}, #{item.riskLevel}, #{item.riskInfo}, #{item.riskRelateId}, #{item.auditor}, #{item.riskDescribe}, #{item.riskConseq}, #{item.controlMeasure}, #{item.remark}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmRisk" >
+		INSERT INTO rsm_risk(risk_name, risk_type, supervisor, control_standard, risk_level, risk_info, risk_relate_id, auditor, risk_describe, risk_conseq, control_measure, remark, create_by, create_time, update_by, update_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.riskName}, #{item.riskType}, #{item.supervisor}, #{item.controlStandard}, #{item.riskLevel}, #{item.riskInfo}, #{item.riskRelateId}, #{item.auditor}, #{item.riskDescribe}, #{item.riskConseq}, #{item.controlMeasure}, #{item.remark}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		risk_name =  VALUES(risk_name),
+		risk_type =  VALUES(risk_type),
+		supervisor =  VALUES(supervisor),
+		control_standard =  VALUES(control_standard),
+		risk_level =  VALUES(risk_level),
+		risk_info =  VALUES(risk_info),
+		risk_relate_id =  VALUES(risk_relate_id),
+		auditor =  VALUES(auditor),
+		risk_describe =  VALUES(risk_describe),
+		risk_conseq =  VALUES(risk_conseq),
+		control_measure =  VALUES(control_measure),
+		remark =  VALUES(remark),
+		create_by =  VALUES(create_by),
+		create_time =  VALUES(create_time),
+		update_by =  VALUES(update_by),
+		update_time =  VALUES(update_time)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/>
+		from rsm_risk where id =#{id}
+	</select>
+    <select id="selectRiskLevelCount" resultType="com.rsm.entity.vo.RiskLevelCountVO">
+		SELECT risk_level AS riskLevel, COUNT(*) AS count
+		FROM rsm_risk
+		GROUP BY risk_level;
+	</select>
+	<select id="selectALevelUnprocessed" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS A_level_unprocessed
+		FROM rsm_unverified_risk AS u
+				 JOIN rsm_risk AS r ON u.risk_id = r.id
+		WHERE r.risk_level = 'A' AND u.status = 0;
+	</select>
+    <select id="selectRecent6MonthLevel" resultType="com.rsm.entity.vo.RiskMonthLevelCountVO">
+		SELECT
+			DATE_FORMAT(create_time, '%Y-%m') AS month,
+    risk_level AS riskLevel,
+    COUNT(*) AS count
+		FROM rsm_risk
+		WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+		GROUP BY month, risk_level
+		ORDER BY month, risk_level;
+	</select>
+	<select id="selectRiskTypeDistribution" resultType="com.rsm.entity.vo.RiskTypeDistributionVO">
+		SELECT risk_type AS riskType, COUNT(*) AS count
+		FROM rsm_risk
+		GROUP BY risk_type
+	</select>
+	<select id="selectMonthlyRiskCount" resultType="com.rsm.entity.vo.MonthlyRiskCountVO">
+		SELECT DATE_FORMAT(create_time, '%Y-%m') AS month, COUNT(*) AS newRisks
+		FROM rsm_risk
+		GROUP BY month
+		ORDER BY month
+	</select>
+	<!-- 查询每月新发现作业风险数量 -->
+	<select id="selectMonthlyOperationRiskCount" resultType="com.rsm.entity.vo.MonthlyRiskCountVO">
+		SELECT DATE_FORMAT(create_time, '%Y-%m') AS month, COUNT(*) AS newRisks
+		FROM rsm_risk
+		WHERE risk_type = '作业风险'
+		GROUP BY month
+		ORDER BY month
+	</select>
+    <!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmRisk">
+		update rsm_risk
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.riskName != null">
+				risk_name= #{bean.riskName},
+			</if>
+			<if test="bean.riskType != null">
+				risk_type= #{bean.riskType},
+			</if>
+			<if test="bean.supervisor != null">
+				supervisor= #{bean.supervisor},
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard= #{bean.controlStandard},
+			</if>
+			<if test="bean.riskLevel != null">
+				risk_level= #{bean.riskLevel},
+			</if>
+			<if test="bean.riskInfo != null">
+				risk_info= #{bean.riskInfo},
+			</if>
+			<if test="bean.riskRelateId != null">
+				risk_relate_id= #{bean.riskRelateId},
+			</if>
+			<if test="bean.auditor != null">
+				auditor= #{bean.auditor},
+			</if>
+			<if test="bean.riskDescribe != null">
+				risk_describe= #{bean.riskDescribe},
+			</if>
+			<if test="bean.riskConseq != null">
+				risk_conseq= #{bean.riskConseq},
+			</if>
+			<if test="bean.controlMeasure != null">
+				control_measure= #{bean.controlMeasure},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+			<if test="bean.createBy != null">
+				create_by= #{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				update_by= #{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_risk where id =#{id}
+	</delete>
+
+</mapper>

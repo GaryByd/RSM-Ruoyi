@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rc.rsm.mapper.RsmSnapshotMapper">
+    
+    <resultMap type="RsmSnapshot" id="RsmSnapshotResult">
+        <result property="id"    column="id"    />
+        <result property="questionTitle"    column="question_title"    />
+        <result property="questionDesc"    column="question_desc"    />
+        <result property="creatorId"    column="creator_id"    />
+        <result property="imgPath"    column="img_path"    />
+        <result property="handlerId"    column="handler_id"    />
+        <result property="approvalReply"    column="approval_reply"    />
+        <result property="property"    column="property"    />
+        <result property="handlerTime"    column="handler_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectRsmSnapshotVo">
+        select id, question_title, question_desc, creator_id, img_path, handler_id, approval_reply, property, handler_time, create_time, update_time, remark from rsm_snapshot
+    </sql>
+
+    <select id="selectRsmSnapshotList" parameterType="RsmSnapshot" resultMap="RsmSnapshotResult">
+        <include refid="selectRsmSnapshotVo"/>
+        <where>  
+            <if test="questionTitle != null  and questionTitle != ''"> and question_title = #{questionTitle}</if>
+            <if test="questionDesc != null  and questionDesc != ''"> and question_desc = #{questionDesc}</if>
+            <if test="creatorId != null "> and creator_id = #{creatorId}</if>
+            <if test="imgPath != null  and imgPath != ''"> and img_path = #{imgPath}</if>
+            <if test="handlerId != null "> and handler_id = #{handlerId}</if>
+            <if test="approvalReply != null  and approvalReply != ''"> and approval_reply = #{approvalReply}</if>
+            <if test="property != null "> and property = #{property}</if>
+            <if test="handlerTime != null "> and handler_time = #{handlerTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectRsmAllSnapshot" parameterType="RsmSnapshot" resultMap="RsmSnapshotResult">
+        <include refid="selectRsmSnapshotVo"/>
+        <where>
+            <if test="questionTitle != null  and questionTitle != ''"> and question_title = #{questionTitle}</if>
+            <if test="questionDesc != null  and questionDesc != ''"> and question_desc = #{questionDesc}</if>
+            <if test="creatorId != null "> and creator_id = #{creatorId}</if>
+            <if test="imgPath != null  and imgPath != ''"> and img_path = #{imgPath}</if>
+            <if test="handlerId != null "> and handler_id = #{handlerId}</if>
+            <if test="approvalReply != null  and approvalReply != ''"> and approval_reply = #{approvalReply}</if>
+            <if test="property != null "> and property = #{property}</if>
+            <if test="handlerTime != null "> and handler_time = #{handlerTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmSnapshotById" parameterType="Long" resultMap="RsmSnapshotResult">
+        <include refid="selectRsmSnapshotVo"/>
+        where id = #{id}
+    </select>
+
+
+    <insert id="insertRsmSnapshot" parameterType="RsmSnapshot" useGeneratedKeys="true" keyProperty="id">
+        insert into rsm_snapshot
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionTitle != null and questionTitle != ''">question_title,</if>
+            <if test="questionDesc != null">question_desc,</if>
+            <if test="creatorId != null">creator_id,</if>
+            <if test="imgPath != null">img_path,</if>
+            <if test="handlerId != null">handler_id,</if>
+            <if test="approvalReply != null">approval_reply,</if>
+            <if test="property != null">property,</if>
+            <if test="handlerTime != null">handler_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionTitle != null and questionTitle != ''">#{questionTitle},</if>
+            <if test="questionDesc != null">#{questionDesc},</if>
+            <if test="creatorId != null">#{creatorId},</if>
+            <if test="imgPath != null">#{imgPath},</if>
+            <if test="handlerId != null">#{handlerId},</if>
+            <if test="approvalReply != null">#{approvalReply},</if>
+            <if test="property != null">#{property},</if>
+            <if test="handlerTime != null">#{handlerTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRsmSnapshot" parameterType="RsmSnapshot">
+        update rsm_snapshot
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="questionTitle != null and questionTitle != ''">question_title = #{questionTitle},</if>
+            <if test="questionDesc != null">question_desc = #{questionDesc},</if>
+            <if test="creatorId != null">creator_id = #{creatorId},</if>
+            <if test="imgPath != null">img_path = #{imgPath},</if>
+            <if test="handlerId != null">handler_id = #{handlerId},</if>
+            <if test="approvalReply != null">approval_reply = #{approvalReply},</if>
+            <if test="property != null">property = #{property},</if>
+            <if test="handlerTime != null">handler_time = #{handlerTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRsmSnapshotById" parameterType="Long">
+        delete from rsm_snapshot where id = #{id}
+    </delete>
+
+    <delete id="deleteRsmSnapshotByIds" parameterType="String">
+        delete from rsm_snapshot where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

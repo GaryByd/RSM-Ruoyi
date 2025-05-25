@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmSnapshotMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmSnapshot">
+		<!--随手拍id-->
+		<id column="id" property="id"/>
+		<!--问题标题-->
+		<result column="question_title" property="questionTitle"/>
+		<!--问题描述-->
+		<result column="question_desc" property="questionDesc"/>
+		<!--上传人id-->
+		<result column="creator_id" property="creatorId"/>
+		<!--图片路径-->
+		<result column="img_path" property="imgPath"/>
+		<!--审批人id -1就是还没有人审批-->
+		<result column="handler_id" property="handlerId"/>
+		<!--审批回复-->
+		<result column="approval_reply" property="approvalReply"/>
+		<!--事件定性 0-未审核 1-隐患 2-非隐患-->
+		<result column="property" property="property"/>
+		<!--处理时间-->
+		<result column="handler_time" property="handlerTime"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--修改时间-->
+		<result column="update_time" property="updateTime"/>
+		<!--备注-->
+		<result column="remark" property="remark"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,question_title,question_desc,creator_id,img_path,handler_id,approval_reply,property,handler_time,create_time,update_time,remark
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.questionTitle != null and query.questionTitle!= ''">
+			and question_title= #{query.questionTitle}
+		</if>
+		<if test=" query.questionDesc != null and query.questionDesc!= ''">
+			and question_desc= #{query.questionDesc}
+		</if>
+		<if test=" query.creatorId != null">
+			and creator_id= #{query.creatorId}
+		</if>
+		<if test=" query.imgPath != null and query.imgPath!= ''">
+			and img_path= #{query.imgPath}
+		</if>
+		<if test=" query.handlerId != null">
+			and handler_id= #{query.handlerId}
+		</if>
+		<if test=" query.approvalReply != null and query.approvalReply!= ''">
+			and approval_reply= #{query.approvalReply}
+		</if>
+		<if test=" query.property != null">
+			and property= #{query.property}
+		</if>
+		<if test=" query.handlerTime != null">
+			and handler_time= #{query.handlerTime}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.questionTitleFuzzy != null and query.questionTitleFuzzy!= null ">
+			and question_title like concat('%', #{query.questionTitleFuzzy}, '%')
+		</if>
+		<if test=" query.questionDescFuzzy != null and query.questionDescFuzzy!= null ">
+			and question_desc like concat('%', #{query.questionDescFuzzy}, '%')
+		</if>
+		<if test=" query.imgPathFuzzy != null and query.imgPathFuzzy!= null ">
+			and img_path like concat('%', #{query.imgPathFuzzy}, '%')
+		</if>
+		<if test=" query.approvalReplyFuzzy != null and query.approvalReplyFuzzy!= null ">
+			and approval_reply like concat('%', #{query.approvalReplyFuzzy}, '%')
+		</if>
+		<if test=" query.handlerTimeStart != null and query.handlerTimeStart!= null ">
+			<![CDATA[ and handler_time >= str_to_date(#{query.handlerTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.handlerTimeEnd != null and query.handlerTimeEnd!= null ">
+			<![CDATA[ and handler_time < date_sub(str_to_date(#{query.handlerTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT 
+		<include refid="base_column_list"/>
+			FROM rsm_snapshot
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_snapshot
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmSnapshot">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_snapshot
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.questionTitle != null">
+				question_title,
+			</if>
+			<if test="bean.questionDesc != null">
+				question_desc,
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id,
+			</if>
+			<if test="bean.imgPath != null">
+				img_path,
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id,
+			</if>
+			<if test="bean.approvalReply != null">
+				approval_reply,
+			</if>
+			<if test="bean.property != null">
+				property,
+			</if>
+			<if test="bean.handlerTime != null">
+				handler_time,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.questionTitle != null">
+				#{bean.questionTitle},
+			</if>
+			<if test="bean.questionDesc != null">
+				#{bean.questionDesc},
+			</if>
+			<if test="bean.creatorId != null">
+				#{bean.creatorId},
+			</if>
+			<if test="bean.imgPath != null">
+				#{bean.imgPath},
+			</if>
+			<if test="bean.handlerId != null">
+				#{bean.handlerId},
+			</if>
+			<if test="bean.approvalReply != null">
+				#{bean.approvalReply},
+			</if>
+			<if test="bean.property != null">
+				#{bean.property},
+			</if>
+			<if test="bean.handlerTime != null">
+				#{bean.handlerTime},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmSnapshot">
+		INSERT INTO rsm_snapshot
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.questionTitle != null">
+				question_title,
+			</if>
+			<if test="bean.questionDesc != null">
+				question_desc,
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id,
+			</if>
+			<if test="bean.imgPath != null">
+				img_path,
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id,
+			</if>
+			<if test="bean.approvalReply != null">
+				approval_reply,
+			</if>
+			<if test="bean.property != null">
+				property,
+			</if>
+			<if test="bean.handlerTime != null">
+				handler_time,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.questionTitle != null">
+				#{bean.questionTitle},
+			</if>
+			<if test="bean.questionDesc != null">
+				#{bean.questionDesc},
+			</if>
+			<if test="bean.creatorId != null">
+				#{bean.creatorId},
+			</if>
+			<if test="bean.imgPath != null">
+				#{bean.imgPath},
+			</if>
+			<if test="bean.handlerId != null">
+				#{bean.handlerId},
+			</if>
+			<if test="bean.approvalReply != null">
+				#{bean.approvalReply},
+			</if>
+			<if test="bean.property != null">
+				#{bean.property},
+			</if>
+			<if test="bean.handlerTime != null">
+				#{bean.handlerTime},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.questionTitle != null">
+				question_title = VALUES(question_title),
+			</if>
+			<if test="bean.questionDesc != null">
+				question_desc = VALUES(question_desc),
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id = VALUES(creator_id),
+			</if>
+			<if test="bean.imgPath != null">
+				img_path = VALUES(img_path),
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id = VALUES(handler_id),
+			</if>
+			<if test="bean.approvalReply != null">
+				approval_reply = VALUES(approval_reply),
+			</if>
+			<if test="bean.property != null">
+				property = VALUES(property),
+			</if>
+			<if test="bean.handlerTime != null">
+				handler_time = VALUES(handler_time),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmSnapshot" >
+		INSERT INTO rsm_snapshot(question_title, question_desc, creator_id, img_path, handler_id, approval_reply, property, handler_time, create_time, update_time, remark) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.questionTitle}, #{item.questionDesc}, #{item.creatorId}, #{item.imgPath}, #{item.handlerId}, #{item.approvalReply}, #{item.property}, #{item.handlerTime}, #{item.createTime}, #{item.updateTime}, #{item.remark})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmSnapshot" >
+		INSERT INTO rsm_snapshot(question_title, question_desc, creator_id, img_path, handler_id, approval_reply, property, handler_time, create_time, update_time, remark) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.questionTitle}, #{item.questionDesc}, #{item.creatorId}, #{item.imgPath}, #{item.handlerId}, #{item.approvalReply}, #{item.property}, #{item.handlerTime}, #{item.createTime}, #{item.updateTime}, #{item.remark})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		question_title =  VALUES(question_title),
+		question_desc =  VALUES(question_desc),
+		creator_id =  VALUES(creator_id),
+		img_path =  VALUES(img_path),
+		handler_id =  VALUES(handler_id),
+		approval_reply =  VALUES(approval_reply),
+		property =  VALUES(property),
+		handler_time =  VALUES(handler_time),
+		create_time =  VALUES(create_time),
+		update_time =  VALUES(update_time),
+		remark =  VALUES(remark)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/> 
+		from rsm_snapshot where id =#{id}
+	</select>
+    <select id="selectPropertyPercentage" resultType="com.rsm.entity.vo.PropertyPercentageVO">
+		SELECT SUM(property = 1) AS passChecked,
+			   SUM(property IN (1,2)) AS totalChecked,
+			   SUM(property = 1)/SUM(property IN (1,2)) AS percentage
+		FROM rsm_snapshot
+		WHERE property IN (1,2);
+	</select>
+	<!-- 查询隐患认定率 -->
+	<select id="selectHazardRecognitionRate" resultType="com.rsm.entity.vo.HazardRecognitionRateVO">
+		SELECT SUM(property = 1) AS hazardCount,
+			   COUNT(*) AS totalCount,
+			   SUM(property = 1)/COUNT(*) AS hazardRate
+		FROM rsm_snapshot
+	</select>
+
+	<!-- 查询用户上传排名前5 -->
+	<select id="selectUserUploadRanking" resultType="com.rsm.entity.vo.UserUploadRankingVO">
+		SELECT
+			sys_user.nick_name AS username,
+			COUNT(*) AS issueCount
+		FROM rsm_snapshot,sys_user
+		WHERE rsm_snapshot.creator_id=sys_user.user_id
+		GROUP BY nick_name
+		ORDER BY issueCount DESC
+			LIMIT 6
+	</select>
+    <!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmSnapshot">
+		update rsm_snapshot
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.questionTitle != null">
+				question_title= #{bean.questionTitle},
+			</if>
+			<if test="bean.questionDesc != null">
+				question_desc= #{bean.questionDesc},
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id= #{bean.creatorId},
+			</if>
+			<if test="bean.imgPath != null">
+				img_path= #{bean.imgPath},
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id= #{bean.handlerId},
+			</if>
+			<if test="bean.approvalReply != null">
+				approval_reply= #{bean.approvalReply},
+			</if>
+			<if test="bean.property != null">
+				property= #{bean.property},
+			</if>
+			<if test="bean.handlerTime != null">
+				handler_time= #{bean.handlerTime},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_snapshot where id =#{id}
+	</delete>
+
+</mapper>

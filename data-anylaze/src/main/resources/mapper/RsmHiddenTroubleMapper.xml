@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmHiddenTroubleMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmHiddenTrouble">
+		<!--隐患id-->
+		<id column="id" property="id"/>
+		<!--隐患标题-->
+		<result column="trouble_title" property="troubleTitle"/>
+		<!--创建人id-->
+		<result column="creator_id" property="creatorId"/>
+		<!--隐患图片路径-逗号分隔-->
+		<result column="trouble_img_path" property="troubleImgPath"/>
+		<!--隐患描述-->
+		<result column="trouble_desc" property="troubleDesc"/>
+		<!--处理状态0-未处理,1-已处理-->
+		<result column="status" property="status"/>
+		<!--隐患分类 0-地质隐患 1-设备隐患 2-环境隐患 3-生产隐患 4-其他-->
+		<result column="trouble_classify" property="troubleClassify"/>
+		<!--隐患来源 0-随手拍 1-上传-->
+		<result column="source" property="source"/>
+		<!--处理人id-->
+		<result column="handler_id" property="handlerId"/>
+		<!--处理图片路径-->
+		<result column="handle_img_path" property="handleImgPath"/>
+		<!--整改描述-->
+		<result column="rectify_desc" property="rectifyDesc"/>
+		<!--整改时间-->
+		<result column="rectify_time" property="rectifyTime"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--修改时间-->
+		<result column="update_time" property="updateTime"/>
+		<!--备注-->
+		<result column="remark" property="remark"/>
+		<!--地点id-->
+		<result column="position_id" property="positionId"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,trouble_title,creator_id,trouble_img_path,trouble_desc,status,trouble_classify,source,handler_id,handle_img_path,rectify_desc,rectify_time,create_time,update_time,remark,position_id
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.troubleTitle != null and query.troubleTitle!= ''">
+			and trouble_title= #{query.troubleTitle}
+		</if>
+		<if test=" query.creatorId != null">
+			and creator_id= #{query.creatorId}
+		</if>
+		<if test=" query.troubleImgPath != null and query.troubleImgPath!= ''">
+			and trouble_img_path= #{query.troubleImgPath}
+		</if>
+		<if test=" query.troubleDesc != null and query.troubleDesc!= ''">
+			and trouble_desc= #{query.troubleDesc}
+		</if>
+		<if test=" query.status != null">
+			and status= #{query.status}
+		</if>
+		<if test=" query.troubleClassify != null">
+			and trouble_classify= #{query.troubleClassify}
+		</if>
+		<if test=" query.source != null">
+			and source= #{query.source}
+		</if>
+		<if test=" query.handlerId != null">
+			and handler_id= #{query.handlerId}
+		</if>
+		<if test=" query.handleImgPath != null and query.handleImgPath!= ''">
+			and handle_img_path= #{query.handleImgPath}
+		</if>
+		<if test=" query.rectifyDesc != null and query.rectifyDesc!= ''">
+			and rectify_desc= #{query.rectifyDesc}
+		</if>
+		<if test=" query.rectifyTime != null">
+			and rectify_time= #{query.rectifyTime}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+		<if test=" query.positionId != null">
+			and position_id= #{query.positionId}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.troubleTitleFuzzy != null and query.troubleTitleFuzzy!= null ">
+			and trouble_title like concat('%', #{query.troubleTitleFuzzy}, '%')
+		</if>
+		<if test=" query.troubleImgPathFuzzy != null and query.troubleImgPathFuzzy!= null ">
+			and trouble_img_path like concat('%', #{query.troubleImgPathFuzzy}, '%')
+		</if>
+		<if test=" query.troubleDescFuzzy != null and query.troubleDescFuzzy!= null ">
+			and trouble_desc like concat('%', #{query.troubleDescFuzzy}, '%')
+		</if>
+		<if test=" query.handleImgPathFuzzy != null and query.handleImgPathFuzzy!= null ">
+			and handle_img_path like concat('%', #{query.handleImgPathFuzzy}, '%')
+		</if>
+		<if test=" query.rectifyDescFuzzy != null and query.rectifyDescFuzzy!= null ">
+			and rectify_desc like concat('%', #{query.rectifyDescFuzzy}, '%')
+		</if>
+		<if test=" query.rectifyTimeStart != null and query.rectifyTimeStart!= null ">
+			<![CDATA[ and rectify_time >= str_to_date(#{query.rectifyTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.rectifyTimeEnd != null and query.rectifyTimeEnd!= null ">
+			<![CDATA[ and rectify_time < date_sub(str_to_date(#{query.rectifyTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT 
+		<include refid="base_column_list"/>
+			FROM rsm_hidden_trouble
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_hidden_trouble
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmHiddenTrouble">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_hidden_trouble
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.troubleTitle != null">
+				trouble_title,
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id,
+			</if>
+			<if test="bean.troubleImgPath != null">
+				trouble_img_path,
+			</if>
+			<if test="bean.troubleDesc != null">
+				trouble_desc,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.troubleClassify != null">
+				trouble_classify,
+			</if>
+			<if test="bean.source != null">
+				source,
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id,
+			</if>
+			<if test="bean.handleImgPath != null">
+				handle_img_path,
+			</if>
+			<if test="bean.rectifyDesc != null">
+				rectify_desc,
+			</if>
+			<if test="bean.rectifyTime != null">
+				rectify_time,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.positionId != null">
+				position_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.troubleTitle != null">
+				#{bean.troubleTitle},
+			</if>
+			<if test="bean.creatorId != null">
+				#{bean.creatorId},
+			</if>
+			<if test="bean.troubleImgPath != null">
+				#{bean.troubleImgPath},
+			</if>
+			<if test="bean.troubleDesc != null">
+				#{bean.troubleDesc},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.troubleClassify != null">
+				#{bean.troubleClassify},
+			</if>
+			<if test="bean.source != null">
+				#{bean.source},
+			</if>
+			<if test="bean.handlerId != null">
+				#{bean.handlerId},
+			</if>
+			<if test="bean.handleImgPath != null">
+				#{bean.handleImgPath},
+			</if>
+			<if test="bean.rectifyDesc != null">
+				#{bean.rectifyDesc},
+			</if>
+			<if test="bean.rectifyTime != null">
+				#{bean.rectifyTime},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.positionId != null">
+				#{bean.positionId},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmHiddenTrouble">
+		INSERT INTO rsm_hidden_trouble
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.troubleTitle != null">
+				trouble_title,
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id,
+			</if>
+			<if test="bean.troubleImgPath != null">
+				trouble_img_path,
+			</if>
+			<if test="bean.troubleDesc != null">
+				trouble_desc,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.troubleClassify != null">
+				trouble_classify,
+			</if>
+			<if test="bean.source != null">
+				source,
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id,
+			</if>
+			<if test="bean.handleImgPath != null">
+				handle_img_path,
+			</if>
+			<if test="bean.rectifyDesc != null">
+				rectify_desc,
+			</if>
+			<if test="bean.rectifyTime != null">
+				rectify_time,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.positionId != null">
+				position_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.troubleTitle != null">
+				#{bean.troubleTitle},
+			</if>
+			<if test="bean.creatorId != null">
+				#{bean.creatorId},
+			</if>
+			<if test="bean.troubleImgPath != null">
+				#{bean.troubleImgPath},
+			</if>
+			<if test="bean.troubleDesc != null">
+				#{bean.troubleDesc},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.troubleClassify != null">
+				#{bean.troubleClassify},
+			</if>
+			<if test="bean.source != null">
+				#{bean.source},
+			</if>
+			<if test="bean.handlerId != null">
+				#{bean.handlerId},
+			</if>
+			<if test="bean.handleImgPath != null">
+				#{bean.handleImgPath},
+			</if>
+			<if test="bean.rectifyDesc != null">
+				#{bean.rectifyDesc},
+			</if>
+			<if test="bean.rectifyTime != null">
+				#{bean.rectifyTime},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.positionId != null">
+				#{bean.positionId},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.troubleTitle != null">
+				trouble_title = VALUES(trouble_title),
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id = VALUES(creator_id),
+			</if>
+			<if test="bean.troubleImgPath != null">
+				trouble_img_path = VALUES(trouble_img_path),
+			</if>
+			<if test="bean.troubleDesc != null">
+				trouble_desc = VALUES(trouble_desc),
+			</if>
+			<if test="bean.status != null">
+				status = VALUES(status),
+			</if>
+			<if test="bean.troubleClassify != null">
+				trouble_classify = VALUES(trouble_classify),
+			</if>
+			<if test="bean.source != null">
+				source = VALUES(source),
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id = VALUES(handler_id),
+			</if>
+			<if test="bean.handleImgPath != null">
+				handle_img_path = VALUES(handle_img_path),
+			</if>
+			<if test="bean.rectifyDesc != null">
+				rectify_desc = VALUES(rectify_desc),
+			</if>
+			<if test="bean.rectifyTime != null">
+				rectify_time = VALUES(rectify_time),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+			<if test="bean.positionId != null">
+				position_id = VALUES(position_id),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmHiddenTrouble" >
+		INSERT INTO rsm_hidden_trouble(trouble_title, creator_id, trouble_img_path, trouble_desc, status, trouble_classify, source, handler_id, handle_img_path, rectify_desc, rectify_time, create_time, update_time, remark, position_id) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.troubleTitle}, #{item.creatorId}, #{item.troubleImgPath}, #{item.troubleDesc}, #{item.status}, #{item.troubleClassify}, #{item.source}, #{item.handlerId}, #{item.handleImgPath}, #{item.rectifyDesc}, #{item.rectifyTime}, #{item.createTime}, #{item.updateTime}, #{item.remark}, #{item.positionId})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmHiddenTrouble" >
+		INSERT INTO rsm_hidden_trouble(trouble_title, creator_id, trouble_img_path, trouble_desc, status, trouble_classify, source, handler_id, handle_img_path, rectify_desc, rectify_time, create_time, update_time, remark, position_id) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.troubleTitle}, #{item.creatorId}, #{item.troubleImgPath}, #{item.troubleDesc}, #{item.status}, #{item.troubleClassify}, #{item.source}, #{item.handlerId}, #{item.handleImgPath}, #{item.rectifyDesc}, #{item.rectifyTime}, #{item.createTime}, #{item.updateTime}, #{item.remark}, #{item.positionId})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		trouble_title =  VALUES(trouble_title),
+		creator_id =  VALUES(creator_id),
+		trouble_img_path =  VALUES(trouble_img_path),
+		trouble_desc =  VALUES(trouble_desc),
+		status =  VALUES(status),
+		trouble_classify =  VALUES(trouble_classify),
+		source =  VALUES(source),
+		handler_id =  VALUES(handler_id),
+		handle_img_path =  VALUES(handle_img_path),
+		rectify_desc =  VALUES(rectify_desc),
+		rectify_time =  VALUES(rectify_time),
+		create_time =  VALUES(create_time),
+		update_time =  VALUES(update_time),
+		remark =  VALUES(remark),
+		position_id =  VALUES(position_id)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/> 
+		from rsm_hidden_trouble where id =#{id}
+	</select>
+
+	<select id="selectDisposeStatusNums" resultType="com.rsm.entity.vo.DisposeStatusNumVO">
+		SELECT
+		    CASE status WHEN 0 THEN '未处理' WHEN 1 THEN '已处理' END AS disposeStatus,
+			COUNT(*) AS num
+		FROM rsm_hidden_trouble
+		GROUP BY status;
+	</select>
+
+	<select id="selectHiddenTroubleSourceNums" resultType="com.rsm.entity.vo.HiddenTroubleSourceNumVO">
+		SELECT
+		    CASE source WHEN 0 THEN '随手拍' WHEN 1 THEN '上传' END AS source,
+		    COUNT(*) AS num
+		FROM rsm_hidden_trouble
+		GROUP BY source;
+	</select>
+	<select id="selectComprehensiveRiskIndex" resultType="com.rsm.entity.vo.ComprehensiveRiskIndexVO">
+		SELECT
+			h.total_hidden_troubles as totalHiddenTroubles,
+			h.unprocessed_troubles as unprocessedTroubles,
+			r.a_risk_count as aRiskCount,
+			(h.total_hidden_troubles*0.4 + r.a_risk_count*0.4 + h.unprocessed_troubles*0.2) AS ComprehensiveRiskIndex
+		FROM
+			(SELECT COUNT(*) AS total_hidden_troubles, SUM(status = 0) AS unprocessed_troubles
+			 FROM rsm_hidden_trouble) AS h
+				CROSS JOIN
+				(SELECT COUNT(*) AS a_risk_count FROM rsm_risk WHERE risk_level = 'A') AS r;
+	</select>
+    <select id="selectHiddenTroubleCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM rsm_hidden_trouble
+	</select>
+
+	<select id="selectTroubleClassifyNums" resultType="com.rsm.entity.vo.TroubleClassifyNumVO">
+		SELECT CASE trouble_classify
+		         WHEN 0 THEN 'Geological Hazard'
+		         WHEN 1 THEN 'Equipment Hazard'
+		         WHEN 2 THEN 'Environmental Hazard'
+		         WHEN 3 THEN 'Production Hazard'
+		         WHEN 4 THEN 'Others'
+		       END AS troubleClassify,
+		       COUNT(*) AS num
+		FROM rsm_hidden_trouble
+		GROUP BY trouble_classify;
+	</select>
+
+	<select id="selectAvgRectifyTime" resultType="com.rsm.entity.vo.AvgRectifyTimeVO">
+		SELECT AVG(TIMESTAMPDIFF(HOUR, create_time, rectify_time)) AS avgHours
+		FROM rsm_hidden_trouble
+		WHERE rectify_time IS NOT NULL
+	</select>
+
+    <!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmHiddenTrouble">
+		update rsm_hidden_trouble
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.troubleTitle != null">
+				trouble_title= #{bean.troubleTitle},
+			</if>
+			<if test="bean.creatorId != null">
+				creator_id= #{bean.creatorId},
+			</if>
+			<if test="bean.troubleImgPath != null">
+				trouble_img_path= #{bean.troubleImgPath},
+			</if>
+			<if test="bean.troubleDesc != null">
+				trouble_desc= #{bean.troubleDesc},
+			</if>
+			<if test="bean.status != null">
+				status= #{bean.status},
+			</if>
+			<if test="bean.troubleClassify != null">
+				trouble_classify= #{bean.troubleClassify},
+			</if>
+			<if test="bean.source != null">
+				source= #{bean.source},
+			</if>
+			<if test="bean.handlerId != null">
+				handler_id= #{bean.handlerId},
+			</if>
+			<if test="bean.handleImgPath != null">
+				handle_img_path= #{bean.handleImgPath},
+			</if>
+			<if test="bean.rectifyDesc != null">
+				rectify_desc= #{bean.rectifyDesc},
+			</if>
+			<if test="bean.rectifyTime != null">
+				rectify_time= #{bean.rectifyTime},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+			<if test="bean.positionId != null">
+				position_id= #{bean.positionId},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_hidden_trouble where id =#{id}
+	</delete>
+
+</mapper>

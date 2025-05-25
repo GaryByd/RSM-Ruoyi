@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rc.rsm.mapper.RsmTaskMapper">
+
+    <resultMap type="RsmTask" id="RsmTaskResult">
+        <result property="id"    column="id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="riskId"    column="risk_id"    />
+        <result property="mandateHolder"    column="mandate_holder"    />
+        <result property="approvalStatus"    column="approval_status"    />
+        <result property="reviewer"    column="reviewer"    />
+        <result property="taskDesc"    column="task_desc"    />
+        <result property="positionId"    column="position_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRsmTaskVo">
+        select id,
+               task_name,
+               type_name,
+               dept_name,
+               start_time,
+               end_time,
+               risk_id,
+               mandate_holder,
+               approval_status,
+               reviewer,
+               task_desc,
+               position_id, create_by, remark, create_time, update_by, update_time from rsm_task
+    </sql>
+
+    <select id="selectRsmTaskList" parameterType="RsmTask" resultMap="RsmTaskResult">
+        <include refid="selectRsmTaskVo"/>
+        <where>
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="riskId != null "> and risk_id = #{riskId}</if>
+            <if test="mandateHolder != null  and mandateHolder != ''"> and mandate_holder = #{mandateHolder}</if>
+            <if test="approvalStatus != null "> and approval_status = #{approvalStatus}</if>
+            <if test="reviewer != null  and reviewer != ''"> and reviewer = #{reviewer}</if>
+            <if test="taskDesc != null  and taskDesc != ''"> and task_desc = #{taskDesc}</if>
+            <if test="positionId != null "> and position_id = #{positionId}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectALlRsmTask" parameterType="RsmTask" resultMap="RsmTaskResult">
+        <include refid="selectRsmTaskVo"/>
+        <where>
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="riskId != null "> and risk_id = #{riskId}</if>
+            <if test="mandateHolder != null  and mandateHolder != ''"> and mandate_holder = #{mandateHolder}</if>
+            <if test="approvalStatus != null "> and approval_status = #{approvalStatus}</if>
+            <if test="reviewer != null  and reviewer != ''"> and reviewer = #{reviewer}</if>
+            <if test="taskDesc != null  and taskDesc != ''"> and task_desc = #{taskDesc}</if>
+            <if test="positionId != null "> and position_id = #{positionId}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectRsmTaskById" parameterType="Long" resultMap="RsmTaskResult">
+        <include refid="selectRsmTaskVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectTodayTask" resultMap="RsmTaskResult">
+        <include refid="selectRsmTaskVo"/>
+        where approval_status = 1 and DATE(start_time) = CURRENT_DATE;
+    </select>
+
+    <!-- 在MyBatis的映射文件中，确保使用正确的别名与VO的属性匹配 -->
+    <select id="selectRsmRiskListByLevel" resultType="com.rc.rsm.domain.vo.RsmTaskVO">
+        select
+        rt.id as id,
+        rt.task_name as taskName,
+        rt.type_name as typeName,
+        rt.dept_name as deptName,
+        rt.start_time as startTime,
+        rt.end_time as endTime,
+        rt.risk_id as riskId,
+        rr.risk_level as riskLevel,
+        rt.mandate_holder as mandateHolder,
+        rt.approval_status as approvalStatus,
+        rt.reviewer as reviewer,
+        rt.task_desc as taskDesc,
+        rt.position_id as positionId,
+        rt.create_by as createBy,
+        rt.remark as remark,
+        rt.create_time as createTime,
+        rt.update_by as updateBy,
+        rt.update_time as updateTime
+        from rsm_task as rt
+        left join rsm_risk as rr on rt.risk_id = rr.id
+        <where>
+            <if test="startTime != null "> and rt.start_time = #{startTime}</if>
+            <if test="riskLevel != null "> and rr.risk_level = #{riskLevel}</if>
+            <if test="approvalStatus != null "> and rt.approval_status = #{approvalStatus}</if>
+        </where>
+    </select>
+
+
+
+    <insert id="insertRsmTask" parameterType="RsmTask" useGeneratedKeys="true" keyProperty="id">
+        insert into rsm_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="riskId != null">risk_id,</if>
+            <if test="mandateHolder != null and mandateHolder != ''">mandate_holder,</if>
+            <if test="approvalStatus != null">approval_status,</if>
+            <if test="reviewer != null and reviewer != ''">reviewer,</if>
+            <if test="taskDesc != null">task_desc,</if>
+            <if test="positionId != null">position_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">#{taskName},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="riskId != null">#{riskId},</if>
+            <if test="mandateHolder != null and mandateHolder != ''">#{mandateHolder},</if>
+            <if test="approvalStatus != null">#{approvalStatus},</if>
+            <if test="reviewer != null and reviewer != ''">#{reviewer},</if>
+            <if test="taskDesc != null">#{taskDesc},</if>
+            <if test="positionId != null">#{positionId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+    <insert id="insertBatchRsmTask" parameterType="java.util.List">
+        insert into rsm_task
+        (
+        task_name,
+        type_name,
+        dept_name,
+        start_time,
+        end_time,
+        risk_id,
+        mandate_holder,
+        approval_status,
+        reviewer,
+        task_desc,
+        position_id,
+        create_by,
+        remark,
+        create_time,
+        update_by,
+        update_time
+        )
+        values
+        <foreach collection="rsmTaskList" item="item" index="index" separator=",">
+            (
+            #{item.taskName},
+            #{item.typeName},
+            #{item.deptName},
+            #{item.startTime},
+            #{item.endTime},
+            #{item.riskId},
+            #{item.mandateHolder},
+            #{item.approvalStatus},
+            #{item.reviewer},
+            #{item.taskDesc},
+            #{item.positionId},
+            #{item.createBy},
+            #{item.remark},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateRsmTask" parameterType="RsmTask">
+        update rsm_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="riskId != null">risk_id = #{riskId},</if>
+            <if test="mandateHolder != null and mandateHolder != ''">mandate_holder = #{mandateHolder},</if>
+            <if test="approvalStatus != null">approval_status = #{approvalStatus},</if>
+            <if test="reviewer != null and reviewer != ''">reviewer = #{reviewer},</if>
+            <if test="taskDesc != null">task_desc = #{taskDesc},</if>
+            <if test="positionId != null">position_id = #{positionId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateApprovalStatusById">
+        update rsm_task set approval_status = 3 where id = #{id}
+    </update>
+
+    <delete id="deleteRsmTaskById" parameterType="Long">
+        delete from rsm_task where id = #{id}
+    </delete>
+
+    <delete id="deleteRsmTaskByIds" parameterType="String">
+        delete from rsm_task where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

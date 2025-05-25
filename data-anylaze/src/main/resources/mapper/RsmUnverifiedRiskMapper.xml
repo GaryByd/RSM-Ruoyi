@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rsm.mapper.DataRsmUnverifiedRiskMapper">
+	<!-- 实体映射-->
+	<resultMap id="base_result_map" type="com.rsm.entity.po.RsmUnverifiedRisk">
+		<!--待查项id-->
+		<id column="id" property="id"/>
+		<!--待查项名称-->
+		<result column="unverified_risk_name" property="unverifiedRiskName"/>
+		<!--关联风险id-->
+		<result column="risk_id" property="riskId"/>
+		<!--巡查清单id-->
+		<result column="patrol_list_id" property="patrolListId"/>
+		<!--类型-->
+		<result column="risk_type" property="riskType"/>
+		<!--管理员-->
+		<result column="admin" property="admin"/>
+		<!--巡查标准-->
+		<result column="control_standard" property="controlStandard"/>
+		<!--巡查点id-->
+		<result column="position" property="position"/>
+		<!--状态 0-未处理  1-未发现隐患 2-发现隐患-->
+		<result column="status" property="status"/>
+		<!--备注-->
+		<result column="remark" property="remark"/>
+		<!--创建人-->
+		<result column="create_by" property="createBy"/>
+		<!--创建时间-->
+		<result column="create_time" property="createTime"/>
+		<!--修改人-->
+		<result column="update_by" property="updateBy"/>
+		<!--更新时间-->
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_column_list">
+		id,unverified_risk_name,risk_id,patrol_list_id,risk_type,admin,control_standard,position,status,remark,create_by,create_time,update_by,update_time
+	</sql>
+
+	<!-- 基础查询条件 -->
+	<sql id="base_query_condition">
+		<if test=" query.id != null">
+			and id= #{query.id}
+		</if>
+		<if test=" query.unverifiedRiskName != null and query.unverifiedRiskName!= ''">
+			and unverified_risk_name= #{query.unverifiedRiskName}
+		</if>
+		<if test=" query.riskId != null">
+			and risk_id= #{query.riskId}
+		</if>
+		<if test=" query.patrolListId != null">
+			and patrol_list_id= #{query.patrolListId}
+		</if>
+		<if test=" query.riskType != null and query.riskType!= ''">
+			and risk_type= #{query.riskType}
+		</if>
+		<if test=" query.admin != null and query.admin!= ''">
+			and admin= #{query.admin}
+		</if>
+		<if test=" query.controlStandard != null and query.controlStandard!= ''">
+			and control_standard= #{query.controlStandard}
+		</if>
+		<if test=" query.position != null">
+			and position= #{query.position}
+		</if>
+		<if test=" query.status != null">
+			and status= #{query.status}
+		</if>
+		<if test=" query.remark != null and query.remark!= ''">
+			and remark= #{query.remark}
+		</if>
+		<if test=" query.createBy != null and query.createBy!= ''">
+			and create_by= #{query.createBy}
+		</if>
+		<if test=" query.createTime != null">
+			and create_time= #{query.createTime}
+		</if>
+		<if test=" query.updateBy != null and query.updateBy!= ''">
+			and update_by= #{query.updateBy}
+		</if>
+		<if test=" query.updateTime != null">
+			and update_time= #{query.updateTime}
+		</if>
+	</sql>
+
+	<!-- 扩展查询条件 -->
+	<sql id="base_query_condition_extend">
+		<if test=" query.unverifiedRiskNameFuzzy != null and query.unverifiedRiskNameFuzzy!= null ">
+			and unverified_risk_name like concat('%', #{query.unverifiedRiskNameFuzzy}, '%')
+		</if>
+		<if test=" query.riskTypeFuzzy != null and query.riskTypeFuzzy!= null ">
+			and risk_type like concat('%', #{query.riskTypeFuzzy}, '%')
+		</if>
+		<if test=" query.adminFuzzy != null and query.adminFuzzy!= null ">
+			and admin like concat('%', #{query.adminFuzzy}, '%')
+		</if>
+		<if test=" query.controlStandardFuzzy != null and query.controlStandardFuzzy!= null ">
+			and control_standard like concat('%', #{query.controlStandardFuzzy}, '%')
+		</if>
+		<if test=" query.remarkFuzzy != null and query.remarkFuzzy!= null ">
+			and remark like concat('%', #{query.remarkFuzzy}, '%')
+		</if>
+		<if test=" query.createByFuzzy != null and query.createByFuzzy!= null ">
+			and create_by like concat('%', #{query.createByFuzzy}, '%')
+		</if>
+		<if test=" query.createTimeStart != null and query.createTimeStart!= null ">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.createTimeEnd != null and query.createTimeEnd!= null ">
+			<![CDATA[ and create_time < date_sub(str_to_date(#{query.createTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+		<if test=" query.updateByFuzzy != null and query.updateByFuzzy!= null ">
+			and update_by like concat('%', #{query.updateByFuzzy}, '%')
+		</if>
+		<if test=" query.updateTimeStart != null and query.updateTimeStart!= null ">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test=" query.updateTimeEnd != null and query.updateTimeEnd!= null ">
+			<![CDATA[ and update_time < date_sub(str_to_date(#{query.updateTimeEnd}, '%Y-%m-%d'), interval -1 day) ]]>
+		</if>
+	</sql>
+
+	<!-- 通用查询条件 -->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT 
+		<include refid="base_column_list"/>
+			FROM rsm_unverified_risk
+		<include refid="query_condition"/>
+		<if test="query.orderBy != null">
+			order by ${query.orderBy}
+		</if>
+		<if test="query.simplePage != null">
+			limit ${query.simplePage.start}, ${query.simplePage.end}
+		</if>
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rsm_unverified_risk
+		<include refid="query_condition"/>
+	</select>
+
+	<!-- 单条插入 (匹配有值的字段) -->
+	<insert id="insert" parameterType="com.rsm.entity.po.RsmUnverifiedRisk">
+		<selectKey keyProperty="bean.id" resultType="Long" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO rsm_unverified_risk
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.unverifiedRiskName != null">
+				unverified_risk_name,
+			</if>
+			<if test="bean.riskId != null">
+				risk_id,
+			</if>
+			<if test="bean.patrolListId != null">
+				patrol_list_id,
+			</if>
+			<if test="bean.riskType != null">
+				risk_type,
+			</if>
+			<if test="bean.admin != null">
+				admin,
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard,
+			</if>
+			<if test="bean.position != null">
+				position,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.unverifiedRiskName != null">
+				#{bean.unverifiedRiskName},
+			</if>
+			<if test="bean.riskId != null">
+				#{bean.riskId},
+			</if>
+			<if test="bean.patrolListId != null">
+				#{bean.patrolListId},
+			</if>
+			<if test="bean.riskType != null">
+				#{bean.riskType},
+			</if>
+			<if test="bean.admin != null">
+				#{bean.admin},
+			</if>
+			<if test="bean.controlStandard != null">
+				#{bean.controlStandard},
+			</if>
+			<if test="bean.position != null">
+				#{bean.position},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 插入或者更新（匹配有值的字段） -->
+	<insert id="insertOrUpdate" parameterType="com.rsm.entity.po.RsmUnverifiedRisk">
+		INSERT INTO rsm_unverified_risk
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.unverifiedRiskName != null">
+				unverified_risk_name,
+			</if>
+			<if test="bean.riskId != null">
+				risk_id,
+			</if>
+			<if test="bean.patrolListId != null">
+				patrol_list_id,
+			</if>
+			<if test="bean.riskType != null">
+				risk_type,
+			</if>
+			<if test="bean.admin != null">
+				admin,
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard,
+			</if>
+			<if test="bean.position != null">
+				position,
+			</if>
+			<if test="bean.status != null">
+				status,
+			</if>
+			<if test="bean.remark != null">
+				remark,
+			</if>
+			<if test="bean.createBy != null">
+				create_by,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+			<if test="bean.updateBy != null">
+				update_by,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.unverifiedRiskName != null">
+				#{bean.unverifiedRiskName},
+			</if>
+			<if test="bean.riskId != null">
+				#{bean.riskId},
+			</if>
+			<if test="bean.patrolListId != null">
+				#{bean.patrolListId},
+			</if>
+			<if test="bean.riskType != null">
+				#{bean.riskType},
+			</if>
+			<if test="bean.admin != null">
+				#{bean.admin},
+			</if>
+			<if test="bean.controlStandard != null">
+				#{bean.controlStandard},
+			</if>
+			<if test="bean.position != null">
+				#{bean.position},
+			</if>
+			<if test="bean.status != null">
+				#{bean.status},
+			</if>
+			<if test="bean.remark != null">
+				#{bean.remark},
+			</if>
+			<if test="bean.createBy != null">
+				#{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				#{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.unverifiedRiskName != null">
+				unverified_risk_name = VALUES(unverified_risk_name),
+			</if>
+			<if test="bean.riskId != null">
+				risk_id = VALUES(risk_id),
+			</if>
+			<if test="bean.patrolListId != null">
+				patrol_list_id = VALUES(patrol_list_id),
+			</if>
+			<if test="bean.riskType != null">
+				risk_type = VALUES(risk_type),
+			</if>
+			<if test="bean.admin != null">
+				admin = VALUES(admin),
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard = VALUES(control_standard),
+			</if>
+			<if test="bean.position != null">
+				position = VALUES(position),
+			</if>
+			<if test="bean.status != null">
+				status = VALUES(status),
+			</if>
+			<if test="bean.remark != null">
+				remark = VALUES(remark),
+			</if>
+			<if test="bean.createBy != null">
+				create_by = VALUES(create_by),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = VALUES(create_time),
+			</if>
+			<if test="bean.updateBy != null">
+				update_by = VALUES(update_by),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = VALUES(update_time),
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 添加（批量添加） -->
+	<insert id="insertBatch" parameterType="com.rsm.entity.po.RsmUnverifiedRisk" >
+		INSERT INTO rsm_unverified_risk(unverified_risk_name, risk_id, patrol_list_id, risk_type, admin, control_standard, position, status, remark, create_by, create_time, update_by, update_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.unverifiedRiskName}, #{item.riskId}, #{item.patrolListId}, #{item.riskType}, #{item.admin}, #{item.controlStandard}, #{item.position}, #{item.status}, #{item.remark}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+	</insert>
+
+	<!-- 批量新增修改（批量插入） -->
+	<insert id="insertOrUpdateBatch" parameterType="com.rsm.entity.po.RsmUnverifiedRisk" >
+		INSERT INTO rsm_unverified_risk(unverified_risk_name, risk_id, patrol_list_id, risk_type, admin, control_standard, position, status, remark, create_by, create_time, update_by, update_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.unverifiedRiskName}, #{item.riskId}, #{item.patrolListId}, #{item.riskType}, #{item.admin}, #{item.controlStandard}, #{item.position}, #{item.status}, #{item.remark}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		id =  VALUES(id),
+		unverified_risk_name =  VALUES(unverified_risk_name),
+		risk_id =  VALUES(risk_id),
+		patrol_list_id =  VALUES(patrol_list_id),
+		risk_type =  VALUES(risk_type),
+		admin =  VALUES(admin),
+		control_standard =  VALUES(control_standard),
+		position =  VALUES(position),
+		status =  VALUES(status),
+		remark =  VALUES(remark),
+		create_by =  VALUES(create_by),
+		create_time =  VALUES(create_time),
+		update_by =  VALUES(update_by),
+		update_time =  VALUES(update_time)
+	</insert>
+
+	<!-- 根据 Id 查询 -->
+	<select id="selectById" resultMap="base_result_map">
+		select
+		<include refid="base_column_list"/> 
+		from rsm_unverified_risk where id =#{id}
+	</select>
+    <select id="selectUnverifiedRiskCountByMonth" resultType="com.rsm.entity.vo.UnverifiedRiskCountByMonthVO">
+		SELECT DATE_FORMAT(create_time, '%Y-%m') AS month, COUNT(*) AS count
+		FROM rsm_unverified_risk
+		GROUP BY month
+		ORDER BY month;
+	</select>
+	<!-- 查询待查项发现隐患率 -->
+	<select id="selectHazardDiscoveryRate" resultType="com.rsm.entity.vo.HazardDiscoveryRateVO">
+		SELECT SUM(status = 2) AS discovered,
+			   COUNT(*) AS total,
+			   SUM(status = 2)/COUNT(*) AS discoveryRate
+		FROM rsm_unverified_risk
+	</select>
+
+    <!-- 根据 Id 更新 -->
+	<update id="updateById" parameterType="com.rsm.entity.po.RsmUnverifiedRisk">
+		update rsm_unverified_risk
+		<set>
+			<if test="bean.id != null">
+				id= #{bean.id},
+			</if>
+			<if test="bean.unverifiedRiskName != null">
+				unverified_risk_name= #{bean.unverifiedRiskName},
+			</if>
+			<if test="bean.riskId != null">
+				risk_id= #{bean.riskId},
+			</if>
+			<if test="bean.patrolListId != null">
+				patrol_list_id= #{bean.patrolListId},
+			</if>
+			<if test="bean.riskType != null">
+				risk_type= #{bean.riskType},
+			</if>
+			<if test="bean.admin != null">
+				admin= #{bean.admin},
+			</if>
+			<if test="bean.controlStandard != null">
+				control_standard= #{bean.controlStandard},
+			</if>
+			<if test="bean.position != null">
+				position= #{bean.position},
+			</if>
+			<if test="bean.status != null">
+				status= #{bean.status},
+			</if>
+			<if test="bean.remark != null">
+				remark= #{bean.remark},
+			</if>
+			<if test="bean.createBy != null">
+				create_by= #{bean.createBy},
+			</if>
+			<if test="bean.createTime != null">
+				create_time= #{bean.createTime},
+			</if>
+			<if test="bean.updateBy != null">
+				update_by= #{bean.updateBy},
+			</if>
+			<if test="bean.updateTime != null">
+				update_time= #{bean.updateTime},
+			</if>
+		</set>
+		where id =#{id}
+	</update>
+
+	<!-- 根据 Id 删除 -->
+	<delete id="deleteById">
+		delete from rsm_unverified_risk where id =#{id}
+	</delete>
+
+</mapper>
